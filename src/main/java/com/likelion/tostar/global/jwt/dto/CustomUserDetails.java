@@ -1,6 +1,6 @@
 package com.likelion.tostar.global.jwt.dto;
 
-import com.likelion.tostar.domain.member.entity.Member;
+import com.likelion.tostar.domain.member.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,30 +9,30 @@ import java.util.Collection;
 
 public class CustomUserDetails implements UserDetails {
 
-    private Member member;
+    private User user;
 
-    public CustomUserDetails(Member member){
-        this.member = member;
+    public CustomUserDetails(User user){
+        this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
-        collection.add((GrantedAuthority) () -> member.getRole());
+        collection.add((GrantedAuthority) () -> user.getRole());
         return collection;
     }
 
     @Override
     public String getPassword() {
-        return member.getPassword();
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return member.getEmail();
+        return user.getEmail();
     }
 
     public String getEmail() {
-        return member.getEmail();
+        return user.getEmail();
     }
 }
