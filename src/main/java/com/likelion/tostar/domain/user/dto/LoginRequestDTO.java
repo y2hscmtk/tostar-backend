@@ -1,4 +1,4 @@
-package com.likelion.tostar.domain.member.dto;
+package com.likelion.tostar.domain.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
