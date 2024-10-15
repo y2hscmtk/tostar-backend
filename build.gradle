@@ -5,7 +5,12 @@ plugins {
 }
 
 group = 'com.likelion.tostar'
-version = '0.0.1-SNAPSHOT'
+
+jar { // jar 빌드시 plain 삭제 -> 빌드 시간 단축용
+	archiveBaseName = 'tostar'
+	version = '0.0.1-SNAPSHOT'
+	enabled = false
+}
 
 java {
 	toolchain {
