@@ -1,5 +1,6 @@
 package com.likelion.tostar.domain.user.service;
 
+import com.likelion.tostar.domain.user.converter.UserConverter;
 import com.likelion.tostar.domain.user.dto.UserInfoDTO;
 import com.likelion.tostar.domain.user.dto.LoginRequestDTO;
 import com.likelion.tostar.domain.user.entity.User;
@@ -22,6 +23,7 @@ public class UserServiceImpl {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final UserConverter userConverter;
 
     /**
      * 로그인
@@ -33,21 +35,16 @@ public class UserServiceImpl {
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
 
-        // 비밀번호 검증
+        // 비밀 번호 검증
         if(!passwordEncoder.matches(password, user.getPassword())) {
             throw new GeneralException(ErrorStatus.PASSWORD_NOT_CORRECT);
         }
 
-        String accessToken = jwtUtil.createJwt(user.getEmail(), user.getRole());
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + accessToken); // JWT 발급 성공시 Header에 삽입하여 반환
-
-        return ResponseEntity.ok().headers(headers)
-                .body(ApiResponse.onSuccess("Bearer " + accessToken));
+        return getJwtResponseEntity(user);
     }
 
     /**
-     * 회원가입
+     * 회원 가입
      */
     public ResponseEntity<?> join(UserInfoDTO userInfoDTO) {
 
@@ -57,14 +54,14 @@ public class UserServiceImpl {
                     .body(ApiResponse.onFailure(ErrorStatus._MEMBER_IS_EXISTS, "회원가입에 실패하였습니다."));
         }
 
-        // 새로운 회원 생성 - OAuth2 를 통한 회원가입을 수행할 경우 비밀번호는 저장하지 않아야함
-        User user = User.builder()
-                .email(userInfoDTO.getEmail())
-                .password(passwordEncoder.encode(userInfoDTO.getPassword())) // 암호화 후 저장
-                .role("ROLE_USER") // 사용자 권한 설정 접두사 ROLE 작성 필요
-                .build();
+        User user = userConverter.toUser(userInfoDTO);
         userRepository.save(user);
 
+        return getJwtResponseEntity(user);
+    }
+
+    // 회원 가입 & 로그인 성공시 JWT 생성 후 반환
+    public ResponseEntity<?> getJwtResponseEntity(User user) {
         String accessToken = jwtUtil.createJwt(user.getEmail(), user.getRole());
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + accessToken);
