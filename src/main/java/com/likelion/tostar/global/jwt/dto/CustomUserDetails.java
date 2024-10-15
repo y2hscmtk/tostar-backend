@@ -1,6 +1,6 @@
 package com.likelion.tostar.global.jwt.dto;
 
-import com.likelion.tostar.domain.member.entity.User;
+import com.likelion.tostar.domain.user.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

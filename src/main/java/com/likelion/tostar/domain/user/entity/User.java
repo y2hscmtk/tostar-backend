@@ -1,4 +1,4 @@
-package com.likelion.tostar.domain.member.entity;
+package com.likelion.tostar.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

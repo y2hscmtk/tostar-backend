@@ -1,4 +1,4 @@
-package com.likelion.tostar.domain.member.dto;
+package com.likelion.tostar.domain.user.dto;
 
 import lombok.Builder;
 import lombok.Data;

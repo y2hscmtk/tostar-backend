@@ -1,7 +1,7 @@
-package com.likelion.tostar.domain.member.repository;
+package com.likelion.tostar.domain.user.repository;
 
 
-import com.likelion.tostar.domain.member.entity.User;
+import com.likelion.tostar.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

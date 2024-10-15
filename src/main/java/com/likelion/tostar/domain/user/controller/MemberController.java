@@ -1,8 +1,8 @@
-package com.likelion.tostar.domain.member.controller;
+package com.likelion.tostar.domain.user.controller;
 
-import com.likelion.tostar.domain.member.dto.JoinRequestDTO;
-import com.likelion.tostar.domain.member.dto.LoginRequestDTO;
-import com.likelion.tostar.domain.member.service.UserService;
+import com.likelion.tostar.domain.user.dto.JoinRequestDTO;
+import com.likelion.tostar.domain.user.dto.LoginRequestDTO;
+import com.likelion.tostar.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/member")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class MemberController {
     private final UserService userService;

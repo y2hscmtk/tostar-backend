@@ -1,9 +1,9 @@
-package com.likelion.tostar.domain.member.service;
+package com.likelion.tostar.domain.user.service;
 
-import com.likelion.tostar.domain.member.dto.JoinRequestDTO;
-import com.likelion.tostar.domain.member.dto.LoginRequestDTO;
-import com.likelion.tostar.domain.member.entity.User;
-import com.likelion.tostar.domain.member.repository.UserRepository;
+import com.likelion.tostar.domain.user.dto.JoinRequestDTO;
+import com.likelion.tostar.domain.user.dto.LoginRequestDTO;
+import com.likelion.tostar.domain.user.entity.User;
+import com.likelion.tostar.domain.user.repository.UserRepository;
 import com.likelion.tostar.global.enums.statuscode.ErrorStatus;
 import com.likelion.tostar.global.exception.GeneralException;
 import com.likelion.tostar.global.jwt.util.JwtUtil;

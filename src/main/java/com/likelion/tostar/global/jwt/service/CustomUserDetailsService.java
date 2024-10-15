@@ -1,7 +1,7 @@
 package com.likelion.tostar.global.jwt.service;
 
-import com.likelion.tostar.domain.member.entity.User;
-import com.likelion.tostar.domain.member.repository.UserRepository;
+import com.likelion.tostar.domain.user.entity.User;
+import com.likelion.tostar.domain.user.repository.UserRepository;
 import com.likelion.tostar.global.enums.statuscode.ErrorStatus;
 import com.likelion.tostar.global.exception.GeneralException;
 import com.likelion.tostar.global.jwt.dto.CustomUserDetails;
