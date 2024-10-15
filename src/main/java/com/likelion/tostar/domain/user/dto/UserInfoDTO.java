@@ -6,9 +6,12 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
+/**
+ * 회원 가입, 회원 정보 수정에 사용
+ */
 @Data
 @Builder
-public class JoinRequestDTO {
+public class UserInfoDTO {
     @NotNull(message = "이름은 필수 입력 항목입니다.")
     private String userName; // 사용자 이름
     @NotNull(message = "이메일은 필수 입력 항목입니다.")
