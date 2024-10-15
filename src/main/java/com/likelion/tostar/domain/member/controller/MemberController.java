@@ -1,6 +1,6 @@
 package com.likelion.tostar.domain.member.controller;
 
-import com.likelion.tostar.domain.member.dto.JoinDTO;
+import com.likelion.tostar.domain.member.dto.JoinRequestDTO;
 import com.likelion.tostar.domain.member.dto.LoginRequestDTO;
 import com.likelion.tostar.domain.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -29,7 +29,7 @@ public class MemberController {
      * 회원 가입
      */
     @PostMapping("/join")
-    public ResponseEntity<?> join(@Valid @RequestBody JoinDTO joinDTO) {
-        return memberService.join(joinDTO);
+    public ResponseEntity<?> join(@Valid @RequestBody JoinRequestDTO joinRequestDTO) {
+        return memberService.join(joinRequestDTO);
     }
 }

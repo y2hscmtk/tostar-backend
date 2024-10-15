@@ -1,6 +1,6 @@
 package com.likelion.tostar.domain.member.service;
 
-import com.likelion.tostar.domain.member.dto.JoinDTO;
+import com.likelion.tostar.domain.member.dto.JoinRequestDTO;
 import com.likelion.tostar.domain.member.dto.LoginRequestDTO;
 import com.likelion.tostar.domain.member.entity.Member;
 import com.likelion.tostar.domain.member.repository.MemberRepository;
@@ -44,18 +44,18 @@ public class MemberService {
                 .body(ApiResponse.onSuccess("Bearer " + accessToken));
     }
 
-    public ResponseEntity<?> join(JoinDTO joinDTO) {
+    public ResponseEntity<?> join(JoinRequestDTO joinRequestDTO) {
 
         // 동일 username 사용자 생성 방지
-        if (memberRepository.existsMemberByEmail(joinDTO.getEmail())) {
+        if (memberRepository.existsMemberByEmail(joinRequestDTO.getEmail())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(ApiResponse.onFailure(ErrorStatus._MEMBER_IS_EXISTS, "회원가입에 실패하였습니다."));
         }
 
         // 새로운 회원 생성 - OAuth2 를 통한 회원가입을 수행할 경우 비밀번호는 저장하지 않아야함
         Member member = Member.builder()
-                .email(joinDTO.getEmail())
-                .password(passwordEncoder.encode(joinDTO.getPassword())) // 암호화 후 저장
+                .email(joinRequestDTO.getEmail())
+                .password(passwordEncoder.encode(joinRequestDTO.getPassword())) // 암호화 후 저장
                 .role("ROLE_USER") // 사용자 권한 설정 접두사 ROLE 작성 필요
                 .build();
         memberRepository.save(member);
