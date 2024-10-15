@@ -1,9 +1,9 @@
 name: tostar
 on:
   push:
-    branches: [ "ci/1-ci-deploy-choi76" ]
+    branches: [ "dev" ]
   pull_request:
-    branches: [ "ci/1-ci-deploy-choi76" ]
+    branches: [ "dev" ]
   workflow_dispatch:
 
 permissions:
