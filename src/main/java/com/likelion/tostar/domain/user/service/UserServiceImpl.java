@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
         String email = dto.getEmail();
         String password = dto.getPassword();
         User user = userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
         // 비밀 번호 검증
         if(!passwordEncoder.matches(password, user.getPassword())) {
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
         // 동일 username 사용자 생성 방지
         if (userRepository.existsUserByEmail(userJoinDTO.getEmail())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(ApiResponse.onFailure(ErrorStatus._MEMBER_IS_EXISTS, "회원가입에 실패하였습니다."));
+                    .body(ApiResponse.onFailure(ErrorStatus._USER_IS_EXISTS, "회원가입에 실패하였습니다."));
         }
 
         User user = userConverter.toUser(userJoinDTO);
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<?> info(String email) {
         // 해당 회원이 실제로 존재 하는지 확인
         User user = userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
         // 회원 정보 반환
         return ResponseEntity.ok()
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<?> edit(UserInfoDTO userInfoDTO, String email) {
         // 해당 회원이 실제로 존재 하는지 확인
         User user = userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
         // 회원 정보 수정
         user.changeUserInfo(userInfoDTO);
         return ResponseEntity.ok(ApiResponse.onSuccess("회원정보가 수정되었습니다."));
