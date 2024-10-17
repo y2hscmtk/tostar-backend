@@ -60,6 +60,18 @@ public class UserServiceImpl implements UserService {
         return getJwtResponseEntity(user);
     }
 
+    @Override
+    public ResponseEntity<?> info(String email) {
+        // 해당 회원이 실제로 존재 하는지 확인
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        // 회원 정보 반환
+        return ResponseEntity.ok()
+                .body(ApiResponse.onSuccess(userConverter.toUserInfoDTO(user)));
+    }
+
+
     // 회원 가입 & 로그인 성공시 JWT 생성 후 반환
     public ResponseEntity<?> getJwtResponseEntity(User user) {
         String accessToken = jwtUtil.createJwt(user.getEmail(), user.getRole());
@@ -68,16 +80,5 @@ public class UserServiceImpl implements UserService {
 
         return ResponseEntity.ok().headers(headers)
                 .body(ApiResponse.onSuccess("Bearer " + accessToken));
-    }
-
-    @Override
-    public ResponseEntity<?> info(String email) {
-        // 해당 회원이 실제로 존재 하는지 확인
-        User user = userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
-
-        // 회원정보 반환
-        return ResponseEntity.ok()
-                .body(ApiResponse.onSuccess(userConverter.toUserInfoDTO(user)));
     }
 }

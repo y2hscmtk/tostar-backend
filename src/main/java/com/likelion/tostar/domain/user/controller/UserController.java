@@ -2,7 +2,7 @@ package com.likelion.tostar.domain.user.controller;
 
 import com.likelion.tostar.domain.user.dto.UserJoinDTO;
 import com.likelion.tostar.domain.user.dto.LoginRequestDTO;
-import com.likelion.tostar.domain.user.service.UserServiceImpl;
+import com.likelion.tostar.domain.user.service.UserService;
 import com.likelion.tostar.global.jwt.dto.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserServiceImpl userServiceImpl;
+    private final UserService userService;
 
     /**
      * 회원 로그인
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
-        return userServiceImpl.login(loginRequestDTO);
+        return userService.login(loginRequestDTO);
     }
 
     /**
@@ -29,17 +29,16 @@ public class UserController {
      */
     @PostMapping("/join")
     public ResponseEntity<?> join(@Valid @RequestBody UserJoinDTO userJoinDTO) {
-        return userServiceImpl.join(userJoinDTO);
+        return userService.join(userJoinDTO);
     }
 
 
     /**
      * 회원 개인 정보 열람(개인 정보 수정 전)
      */
-    @GetMapping
+    @GetMapping("/info")
     public ResponseEntity<?> info(
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        customUserDetails.getEmail(); // 현재 로그인 한 사용자 이메일
-        return null;
+        return userService.info(customUserDetails.getEmail());
     }
 }
