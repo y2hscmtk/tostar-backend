@@ -1,6 +1,6 @@
 package com.likelion.tostar.domain.user.controller;
 
-import com.likelion.tostar.domain.user.dto.UserInfoDTO;
+import com.likelion.tostar.domain.user.dto.UserInfoRequestDTO;
 import com.likelion.tostar.domain.user.dto.LoginRequestDTO;
 import com.likelion.tostar.domain.user.service.UserServiceImpl;
 import com.likelion.tostar.global.jwt.dto.CustomUserDetails;
@@ -28,8 +28,8 @@ public class UserController {
      * 회원 가입
      */
     @PostMapping("/join")
-    public ResponseEntity<?> join(@Valid @RequestBody UserInfoDTO userInfoDTO) {
-        return userServiceImpl.join(userInfoDTO);
+    public ResponseEntity<?> join(@Valid @RequestBody UserInfoRequestDTO userInfoRequestDTO) {
+        return userServiceImpl.join(userInfoRequestDTO);
     }
 
 

@@ -1,6 +1,6 @@
 package com.likelion.tostar.domain.user.converter;
 
-import com.likelion.tostar.domain.user.dto.UserInfoDTO;
+import com.likelion.tostar.domain.user.dto.UserInfoRequestDTO;
 import com.likelion.tostar.domain.user.dto.UserInfoResponseDTO;
 import com.likelion.tostar.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -12,17 +12,17 @@ import org.springframework.stereotype.Component;
 public class UserConverter {
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public User toUser(UserInfoDTO userInfoDTO) {
+    public User toUser(UserInfoRequestDTO userInfoRequestDTO) {
         return User.builder()
-                .userName(userInfoDTO.getUserName())
-                .email(userInfoDTO.getEmail())
-                .password(passwordEncoder.encode(userInfoDTO.getPassword()))
-                .petName(userInfoDTO.getPetName())
-                .ownerName(userInfoDTO.getOwnerName())
-                .petGender(userInfoDTO.getPetGender())
-                .category(userInfoDTO.getCategory())
-                .birthday(userInfoDTO.getBirthDay())
-                .starDay(userInfoDTO.getStarDay())
+                .userName(userInfoRequestDTO.getUserName())
+                .email(userInfoRequestDTO.getEmail())
+                .password(passwordEncoder.encode(userInfoRequestDTO.getPassword()))
+                .petName(userInfoRequestDTO.getPetName())
+                .ownerName(userInfoRequestDTO.getOwnerName())
+                .petGender(userInfoRequestDTO.getPetGender())
+                .category(userInfoRequestDTO.getCategory())
+                .birthday(userInfoRequestDTO.getBirthDay())
+                .starDay(userInfoRequestDTO.getStarDay())
                 .role("ROLE_USER")
                 .build();
     }

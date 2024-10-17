@@ -1,7 +1,7 @@
 package com.likelion.tostar.domain.user.service;
 
 import com.likelion.tostar.domain.user.converter.UserConverter;
-import com.likelion.tostar.domain.user.dto.UserInfoDTO;
+import com.likelion.tostar.domain.user.dto.UserInfoRequestDTO;
 import com.likelion.tostar.domain.user.dto.LoginRequestDTO;
 import com.likelion.tostar.domain.user.entity.User;
 import com.likelion.tostar.domain.user.repository.UserRepository;
@@ -46,15 +46,15 @@ public class UserServiceImpl implements UserService {
     /**
      * 회원 가입
      */
-    public ResponseEntity<?> join(UserInfoDTO userInfoDTO) {
+    public ResponseEntity<?> join(UserInfoRequestDTO userInfoRequestDTO) {
 
         // 동일 username 사용자 생성 방지
-        if (userRepository.existsUserByEmail(userInfoDTO.getEmail())) {
+        if (userRepository.existsUserByEmail(userInfoRequestDTO.getEmail())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(ApiResponse.onFailure(ErrorStatus._MEMBER_IS_EXISTS, "회원가입에 실패하였습니다."));
         }
 
-        User user = userConverter.toUser(userInfoDTO);
+        User user = userConverter.toUser(userInfoRequestDTO);
         userRepository.save(user);
 
         return getJwtResponseEntity(user);
