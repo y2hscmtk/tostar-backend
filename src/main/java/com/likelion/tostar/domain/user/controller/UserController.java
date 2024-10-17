@@ -1,5 +1,6 @@
 package com.likelion.tostar.domain.user.controller;
 
+import com.likelion.tostar.domain.user.dto.UserInfoDTO;
 import com.likelion.tostar.domain.user.dto.UserJoinDTO;
 import com.likelion.tostar.domain.user.dto.LoginRequestDTO;
 import com.likelion.tostar.domain.user.service.UserService;
@@ -20,7 +21,8 @@ public class UserController {
      * 회원 로그인
      */
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDTO loginRequestDTO) {
+    public ResponseEntity<?> login(
+            @Valid @RequestBody LoginRequestDTO loginRequestDTO) {
         return userService.login(loginRequestDTO);
     }
 
@@ -28,7 +30,8 @@ public class UserController {
      * 회원 가입
      */
     @PostMapping("/join")
-    public ResponseEntity<?> join(@Valid @RequestBody UserJoinDTO userJoinDTO) {
+    public ResponseEntity<?> join(
+            @Valid @RequestBody UserJoinDTO userJoinDTO) {
         return userService.join(userJoinDTO);
     }
 
@@ -40,5 +43,15 @@ public class UserController {
     public ResponseEntity<?> info(
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return userService.info(customUserDetails.getEmail());
+    }
+
+    /**
+     * 회원 개인 정보 수정
+     */
+    @PutMapping("/edit")
+    public ResponseEntity<?> edit(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestBody UserInfoDTO userInfoDTO) {
+        return userService.edit(userInfoDTO, customUserDetails.getEmail());
     }
 }

@@ -50,7 +50,6 @@ public class UserServiceImpl implements UserService {
      * 회원 가입
      */
     @Override
-    @Transactional(readOnly = true)
     public ResponseEntity<?> join(UserJoinDTO userJoinDTO) {
 
         // 동일 username 사용자 생성 방지

@@ -1,5 +1,6 @@
 package com.likelion.tostar.domain.user.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,7 +12,9 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class UserInfoDTO {
+    @NotNull(message = "애완동물 이름은 필수 입력 사항입니다.")
     private String petName;
+    @NotNull(message = "보호자 이름은 필수 입력 사항입니다.")
     private String ownerName;
     private String petGender;
     private String category;
