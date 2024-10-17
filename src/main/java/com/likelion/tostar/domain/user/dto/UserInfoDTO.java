@@ -1,17 +1,16 @@
 package com.likelion.tostar.domain.user.dto;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
 
 /**
- * 개인정보 열람, 수정에 사용
+ * 회원 정보 열람, 수정에 사용
  */
 @Data
 @Builder
-public class UserInfoResponseDTO {
+public class UserInfoDTO {
     private String petName;
     private String ownerName;
     private String petGender;
