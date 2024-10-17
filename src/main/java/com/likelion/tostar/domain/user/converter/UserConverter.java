@@ -1,9 +1,9 @@
 package com.likelion.tostar.domain.user.converter;
 
+import com.likelion.tostar.domain.user.dto.UserJoinDTO;
 import com.likelion.tostar.domain.user.dto.UserInfoDTO;
 import com.likelion.tostar.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -12,18 +12,29 @@ import org.springframework.stereotype.Component;
 public class UserConverter {
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public User toUser(UserInfoDTO userInfoDTO) {
+    public User toUser(UserJoinDTO userJoinDTO) {
         return User.builder()
-                .userName(userInfoDTO.getUserName())
-                .email(userInfoDTO.getEmail())
-                .password(passwordEncoder.encode(userInfoDTO.getPassword()))
-                .petName(userInfoDTO.getPetName())
-                .ownerName(userInfoDTO.getOwnerName())
-                .petGender(userInfoDTO.getPetGender())
-                .category(userInfoDTO.getCategory())
-                .birthday(userInfoDTO.getBirthDay())
-                .starDay(userInfoDTO.getStarDay())
+                .userName(userJoinDTO.getUserName())
+                .email(userJoinDTO.getEmail())
+                .password(passwordEncoder.encode(userJoinDTO.getPassword()))
+                .petName(userJoinDTO.getPetName())
+                .ownerName(userJoinDTO.getOwnerName())
+                .petGender(userJoinDTO.getPetGender())
+                .category(userJoinDTO.getCategory())
+                .birthday(userJoinDTO.getBirthDay())
+                .starDay(userJoinDTO.getStarDay())
                 .role("ROLE_USER")
+                .build();
+    }
+
+    public UserInfoDTO toUserInfoDTO(User user) {
+        return UserInfoDTO.builder()
+                .petName(user.getPetName())
+                .ownerName(user.getOwnerName())
+                .petGender(user.getPetGender())
+                .category(user.getCategory())
+                .birthDay(user.getBirthday())
+                .starDay(user.getStarDay())
                 .build();
     }
 }

@@ -23,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             throws UsernameNotFoundException {
         // email로 회원 조회 후 UserDetails 객체 생성 -> JWT Filter에서 검증시 사용
         User user = userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
         return new CustomUserDetails(user);
     }
 }
