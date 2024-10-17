@@ -43,4 +43,9 @@ public class User {
         this.birthday = userInfoDTO.getBirthDay();
         this.starDay = userInfoDTO.getStarDay();
     }
+
+    // 프로필 이미지 저장
+    public void changeProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
 }

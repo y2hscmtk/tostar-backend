@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class UserInfoDTO {
+    private String profileImage; // 애완 동물 이미지
     @NotNull(message = "애완동물 이름은 필수 입력 사항입니다.")
     private String petName;
     @NotNull(message = "보호자 이름은 필수 입력 사항입니다.")
