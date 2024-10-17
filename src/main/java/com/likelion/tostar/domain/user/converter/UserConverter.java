@@ -30,6 +30,7 @@ public class UserConverter {
 
     public UserInfoDTO toUserInfoDTO(User user) {
         return UserInfoDTO.builder()
+                .profileImage(user.getProfileImage())
                 .petName(user.getPetName())
                 .ownerName(user.getOwnerName())
                 .petGender(user.getPetGender())
