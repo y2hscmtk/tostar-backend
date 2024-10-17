@@ -55,7 +55,8 @@ public class UserController {
     @PutMapping("/edit")
     public ResponseEntity<?> edit(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestBody UserInfoDTO userInfoDTO) {
-        return userService.edit(userInfoDTO, customUserDetails.getEmail());
+            @RequestParam("image") MultipartFile image,
+            @Valid @ModelAttribute UserInfoDTO userInfoDTO) throws IOException {
+        return userService.edit(image, userInfoDTO, customUserDetails.getEmail());
     }
 }

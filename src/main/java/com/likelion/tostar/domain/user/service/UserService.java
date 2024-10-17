@@ -12,5 +12,5 @@ public interface UserService {
     ResponseEntity<?> login(LoginRequestDTO dto);
     ResponseEntity<?> join(MultipartFile image, UserJoinDTO userJoinDTO) throws IOException;
     ResponseEntity<?> info(String email);
-    ResponseEntity<?> edit(UserInfoDTO userInfoDTO, String email);
+    ResponseEntity<?> edit(MultipartFile image, UserInfoDTO userInfoDTO, String email) throws IOException;
 }

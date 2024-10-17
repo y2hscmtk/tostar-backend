@@ -51,6 +51,17 @@ public class S3Service {
         return fileUrl.toString();
     }
 
+    // 파일 삭제
+    public void deleteFile(String fileName) {
+        try {
+            s3Client.deleteObject(bucket, fileName);
+        } catch (AmazonServiceException e) {
+            throw new GeneralException(ErrorStatus._S3_REMOVE_FAIL);
+        } catch (SdkClientException e) {
+            throw new GeneralException(ErrorStatus._S3_CLIENT_ERROR);
+        }
+    }
+
 
     // 파일 다운로드 메서드 - 직접 다운로드 -> 이미지를 파일로 다운할 수 있는 다운로드 링크를 제공
     public byte[] downloadFile(String fileName) throws IOException {

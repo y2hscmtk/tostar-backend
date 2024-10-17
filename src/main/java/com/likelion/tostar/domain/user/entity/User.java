@@ -36,7 +36,6 @@ public class User {
 
     // 회원 정보 수정 메소드
     public void changeUserInfo(UserInfoDTO userInfoDTO) {
-        this.profileImage = userInfoDTO.getProfileImage();
         this.petName = userInfoDTO.getPetName();
         this.ownerName = userInfoDTO.getOwnerName();
         this.petGender = userInfoDTO.getPetGender();
