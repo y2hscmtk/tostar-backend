@@ -3,13 +3,12 @@ package com.likelion.tostar.domain.user.controller;
 import com.likelion.tostar.domain.user.dto.UserInfoDTO;
 import com.likelion.tostar.domain.user.dto.LoginRequestDTO;
 import com.likelion.tostar.domain.user.service.UserServiceImpl;
+import com.likelion.tostar.global.jwt.dto.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
@@ -31,5 +30,16 @@ public class UserController {
     @PostMapping("/join")
     public ResponseEntity<?> join(@Valid @RequestBody UserInfoDTO userInfoDTO) {
         return userServiceImpl.join(userInfoDTO);
+    }
+
+
+    /**
+     * 회원 개인정보 열람(개인 정보 수정 전)
+     */
+    @GetMapping
+    public ResponseEntity<?> info(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        customUserDetails.getEmail(); // 현재 로그인 한 사용자 이메일
+        return null;
     }
 }

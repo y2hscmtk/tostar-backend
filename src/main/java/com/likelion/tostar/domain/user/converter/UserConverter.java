@@ -1,9 +1,9 @@
 package com.likelion.tostar.domain.user.converter;
 
 import com.likelion.tostar.domain.user.dto.UserInfoDTO;
+import com.likelion.tostar.domain.user.dto.UserInfoResponseDTO;
 import com.likelion.tostar.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +24,17 @@ public class UserConverter {
                 .birthday(userInfoDTO.getBirthDay())
                 .starDay(userInfoDTO.getStarDay())
                 .role("ROLE_USER")
+                .build();
+    }
+
+    public UserInfoResponseDTO toUserInfoResponseDTO(User user) {
+        return UserInfoResponseDTO.builder()
+                .petName(user.getPetName())
+                .ownerName(user.getOwnerName())
+                .petGender(user.getPetGender())
+                .category(user.getCategory())
+                .birthDay(user.getBirthday())
+                .starDay(user.getStarDay())
                 .build();
     }
 }

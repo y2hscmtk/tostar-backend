@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl {
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
@@ -68,5 +68,16 @@ public class UserServiceImpl {
 
         return ResponseEntity.ok().headers(headers)
                 .body(ApiResponse.onSuccess("Bearer " + accessToken));
+    }
+
+    @Override
+    public ResponseEntity<?> info(String email) {
+        // 해당 회원이 실제로 존재 하는지 확인
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MEMBER_NOT_FOUND));
+
+        // 회원정보 반환
+        return ResponseEntity.ok()
+                .body(ApiResponse.onSuccess(userConverter.toUserInfoResponseDTO(user)));
     }
 }

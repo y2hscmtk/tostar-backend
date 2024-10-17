@@ -7,4 +7,5 @@ import org.springframework.http.ResponseEntity;
 public interface UserService {
     ResponseEntity<?> login(LoginRequestDTO dto);
     ResponseEntity<?> join(UserInfoDTO userInfoDTO);
+    ResponseEntity<?> info(String email);
 }
