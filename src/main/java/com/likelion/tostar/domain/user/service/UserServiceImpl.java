@@ -10,6 +10,7 @@ import com.likelion.tostar.global.enums.statuscode.ErrorStatus;
 import com.likelion.tostar.global.exception.GeneralException;
 import com.likelion.tostar.global.jwt.util.JwtUtil;
 import com.likelion.tostar.global.response.ApiResponse;
+import com.likelion.tostar.global.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Service
 @Transactional
@@ -26,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final UserConverter userConverter;
+    private final S3Service s3Service;
 
     /**
      * 로그인
@@ -50,7 +55,7 @@ public class UserServiceImpl implements UserService {
      * 회원 가입
      */
     @Override
-    public ResponseEntity<?> join(UserJoinDTO userJoinDTO) {
+    public ResponseEntity<?> join(MultipartFile image, UserJoinDTO userJoinDTO) throws IOException {
 
         // 동일 username 사용자 생성 방지
         if (userRepository.existsUserByEmail(userJoinDTO.getEmail())) {
@@ -59,7 +64,10 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userConverter.toUser(userJoinDTO);
+
         userRepository.save(user);
+
+        user.changeProfileImage(s3Service.uploadFile(image));
 
         return getJwtResponseEntity(user);
     }

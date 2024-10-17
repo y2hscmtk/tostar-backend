@@ -14,6 +14,7 @@ public class UserConverter {
 
     public User toUser(UserJoinDTO userJoinDTO) {
         return User.builder()
+                .profileImage(userJoinDTO.getProfileImage())
                 .userName(userJoinDTO.getUserName())
                 .email(userJoinDTO.getEmail())
                 .password(passwordEncoder.encode(userJoinDTO.getPassword()))

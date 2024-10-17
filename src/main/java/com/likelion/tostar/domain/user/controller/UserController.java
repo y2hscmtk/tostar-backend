@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/user")
@@ -31,8 +34,9 @@ public class UserController {
      */
     @PostMapping("/join")
     public ResponseEntity<?> join(
-            @Valid @RequestBody UserJoinDTO userJoinDTO) {
-        return userService.join(userJoinDTO);
+            @RequestParam("image") MultipartFile image,
+            @Valid @ModelAttribute UserJoinDTO userJoinDTO) throws IOException  {
+        return userService.join(image, userJoinDTO);
     }
 
 

@@ -1,7 +1,11 @@
 package com.likelion.tostar.global.s3.service;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.likelion.tostar.global.enums.statuscode.ErrorStatus;
+import com.likelion.tostar.global.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,13 +33,24 @@ public class S3Service {
         metadata.setContentType(file.getContentType());
 
         try (InputStream inputStream = file.getInputStream()) {
+            // S3에 파일 업로드 시도
             s3Client.putObject(bucket, fileName, inputStream, metadata);
+        } catch (AmazonServiceException e) {
+            // S3와 관련된 오류 처리
+            throw new GeneralException(ErrorStatus._S3_UPLOAD_FAIL);
+        } catch (SdkClientException e) {
+            // SDK 관련 오류 처리
+            throw new GeneralException(ErrorStatus._S3_CLIENT_ERROR);
+        } catch (IOException e) {
+            // 파일 입출력 관련 오류 처리
+            throw new GeneralException(ErrorStatus._S3_FILE_PROCESSING_ERROR);
         }
 
         // S3에 업로드된 파일 URL 반환
         URL fileUrl = s3Client.getUrl(bucket, fileName);
         return fileUrl.toString();
     }
+
 
     // 파일 다운로드 메서드 - 직접 다운로드 -> 이미지를 파일로 다운할 수 있는 다운로드 링크를 제공
     public byte[] downloadFile(String fileName) throws IOException {
