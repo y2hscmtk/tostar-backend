@@ -1,5 +1,6 @@
 package com.likelion.tostar.domain.user.entity;
 
+import com.likelion.tostar.domain.user.dto.UserInfoDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,4 +33,14 @@ public class User {
     @Column(name = "star_day")
     private LocalDate starDay;
     private String role; // 사용자 권한
+
+    // 회원 정보 수정 메소드
+    public void changeUserInfo(UserInfoDTO userInfoDTO) {
+        this.petName = userInfoDTO.getPetName();
+        this.ownerName = userInfoDTO.getOwnerName();
+        this.petGender = userInfoDTO.getPetGender();
+        this.category = userInfoDTO.getCategory();
+        this.birthday = userInfoDTO.getBirthDay();
+        this.starDay = userInfoDTO.getStarDay();
+    }
 }
