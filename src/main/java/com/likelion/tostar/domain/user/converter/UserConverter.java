@@ -1,5 +1,6 @@
 package com.likelion.tostar.domain.user.converter;
 
+import com.likelion.tostar.domain.user.dto.LoginResponseDTO;
 import com.likelion.tostar.domain.user.dto.UserJoinDTO;
 import com.likelion.tostar.domain.user.dto.UserInfoDTO;
 import com.likelion.tostar.domain.user.entity.User;
@@ -37,6 +38,14 @@ public class UserConverter {
                 .category(user.getCategory())
                 .birthDay(user.getBirthday())
                 .starDay(user.getStarDay())
+                .build();
+    }
+
+    public LoginResponseDTO toLoginResponseDTO(User user) {
+        return LoginResponseDTO.builder()
+                .userName(user.getUserName())
+                .petName(user.getPetName())
+                .email(user.getEmail())
                 .build();
     }
 }
