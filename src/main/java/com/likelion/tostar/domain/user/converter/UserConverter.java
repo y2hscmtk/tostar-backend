@@ -41,11 +41,12 @@ public class UserConverter {
                 .build();
     }
 
-    public LoginResponseDTO toLoginResponseDTO(User user) {
+    public LoginResponseDTO toLoginResponseDTO(User user, String accessToken) {
         return LoginResponseDTO.builder()
                 .userName(user.getUserName())
                 .petName(user.getPetName())
                 .email(user.getEmail())
+                .accessToken(accessToken)
                 .build();
     }
 }
