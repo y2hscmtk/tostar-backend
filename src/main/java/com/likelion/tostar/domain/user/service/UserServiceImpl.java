@@ -1,6 +1,7 @@
 package com.likelion.tostar.domain.user.service;
 
 import com.likelion.tostar.domain.user.converter.UserConverter;
+import com.likelion.tostar.domain.user.dto.LoginResponseDTO;
 import com.likelion.tostar.domain.user.dto.UserInfoDTO;
 import com.likelion.tostar.domain.user.dto.UserJoinDTO;
 import com.likelion.tostar.domain.user.dto.LoginRequestDTO;
@@ -19,9 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 @Service
 @Transactional
@@ -49,7 +48,15 @@ public class UserServiceImpl implements UserService {
             throw new GeneralException(ErrorStatus.PASSWORD_NOT_CORRECT);
         }
 
-        return getJwtResponseEntity(user);
+        String accessToken = "Bearer " + jwtUtil.createJwt(user.getEmail(), user.getRole());
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", accessToken);
+
+        // 반환 DTO 생성
+        LoginResponseDTO loginResponseDTO = userConverter.toLoginResponseDTO(user, accessToken);
+
+        return ResponseEntity.ok().headers(headers)
+                .body(ApiResponse.onSuccess(loginResponseDTO));
     }
 
     /**
