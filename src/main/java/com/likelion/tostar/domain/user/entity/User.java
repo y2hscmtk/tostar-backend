@@ -4,6 +4,7 @@ import com.likelion.tostar.domain.community.entity.Community;
 import com.likelion.tostar.domain.user.dto.UserInfoDTO;
 import jakarta.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -41,7 +42,7 @@ public class User {
 
     @Builder.Default
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    private ArrayList<Community> myCommunities = new ArrayList<>();
+    private List<Community> myCommunities = new ArrayList<>();
 
 
     // 회원 정보 수정 메소드

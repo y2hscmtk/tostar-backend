@@ -6,10 +6,10 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface CommunityRepository extends JpaRepository<Long, Community> {
+public interface CommunityRepository extends JpaRepository<Community, Long> {
     /**
      * 커뮤니티 미리보기 랜덤 3개 반환
      */
-    @Query(value = "SELECT * FROM Community ORDER BY RAND() LIMIT 3", nativeQuery = true)
+    @Query(value = "SELECT * FROM community ORDER BY RAND() LIMIT 3", nativeQuery = true)
     List<Community> getRandomPreviews();
 }
