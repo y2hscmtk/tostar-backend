@@ -1,2 +1,4 @@
-package com.likelion.tostar.domain.community.service;public interface CommunityService {
+package com.likelion.tostar.domain.community.service;
+
+public interface CommunityService {
 }
