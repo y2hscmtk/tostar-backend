@@ -9,6 +9,7 @@ import lombok.Data;
 @Data
 @Builder
 public class LoginResponseDTO {
+    private String profileImage; // 애완동물 이미지
     private String petName; // 애완동물 이름
     private String userName; // 사용자 이름
     private String email; // 사용자 이메일

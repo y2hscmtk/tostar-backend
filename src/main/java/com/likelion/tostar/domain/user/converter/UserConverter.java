@@ -43,6 +43,7 @@ public class UserConverter {
 
     public LoginResponseDTO toLoginResponseDTO(User user, String accessToken) {
         return LoginResponseDTO.builder()
+                .profileImage(user.getProfileImage())
                 .userName(user.getUserName())
                 .petName(user.getPetName())
                 .email(user.getEmail())
