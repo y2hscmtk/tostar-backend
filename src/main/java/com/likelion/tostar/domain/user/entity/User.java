@@ -1,7 +1,9 @@
 package com.likelion.tostar.domain.user.entity;
 
+import com.likelion.tostar.domain.community.entity.Community;
 import com.likelion.tostar.domain.user.dto.UserInfoDTO;
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -33,6 +35,14 @@ public class User {
     @Column(name = "star_day")
     private LocalDate starDay;
     private String role; // 사용자 권한
+
+
+    //====== 연관 매핑 ======//
+
+    @Builder.Default
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private ArrayList<Community> myCommunities = new ArrayList<>();
+
 
     // 회원 정보 수정 메소드
     public void changeUserInfo(UserInfoDTO userInfoDTO) {
