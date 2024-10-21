@@ -72,4 +72,26 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
 
         return ResponseEntity.ok(ApiResponse.onSuccess("커뮤니티가 수정되었습니다."));
     }
+
+    @Override
+    public ResponseEntity<?> deleteCommunity(Long communityId, String email) {
+        // 1. 회원 정보 조회
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+
+        // 2. 커뮤니티 존재 확인
+        Community community = communityRepository.findById(communityId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._COMMUNITY_NOT_FOUND));
+
+        // 3. 회원이 커뮤니티 주인인지 확인
+        if (!community.getOwner().equals(user)) {
+            throw new GeneralException(ErrorStatus._FORBIDDEN);
+        }
+
+        // 4. 커뮤니티 이미지 삭제
+        s3Service.deleteFileByURL(community.getProfileImage());
+        communityRepository.delete(community);
+
+        return ResponseEntity.ok(ApiResponse.onSuccess("커뮤니티가 삭제되었습니다."));
+    }
 }
