@@ -13,9 +13,11 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CommunityCommandServiceImpl implements CommunityCommandService {
     private final UserRepository userRepository;
@@ -37,5 +39,11 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
         communityRepository.save(community);
 
         return ResponseEntity.ok(ApiResponse.onSuccess("커뮤니티가 생성되었습니다."));
+    }
+
+    @Override
+    public ResponseEntity<?> editCommunity(
+            Long communityId, MultipartFile image, CommunityFormDTO communityFormDTO, String email) {
+        return null;
     }
 }
