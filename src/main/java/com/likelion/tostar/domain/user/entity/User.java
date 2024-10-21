@@ -1,6 +1,7 @@
 package com.likelion.tostar.domain.user.entity;
 
 import com.likelion.tostar.domain.community.entity.Community;
+import com.likelion.tostar.domain.community.entity.Member;
 import com.likelion.tostar.domain.user.dto.UserInfoDTO;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -43,7 +44,6 @@ public class User {
     @Builder.Default
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Community> myCommunities = new ArrayList<>();
-
 
     // 회원 정보 수정 메소드
     public void changeUserInfo(UserInfoDTO userInfoDTO) {
