@@ -13,7 +13,7 @@ public enum ErrorStatus implements BaseCode {
 	_FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
 
 	// User Error
-	_USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "USER4001", "해당하는 사용자를 찾을 수 없습니다."),
+	_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4001", "해당하는 사용자를 찾을 수 없습니다."),
 	PASSWORD_NOT_CORRECT(HttpStatus.FORBIDDEN, "USER4002", "비밀번호가 일치하지 않습니다."),
 	_USER_IS_EXISTS(HttpStatus.FORBIDDEN, "USER4003", "해당하는 사용자가 이미 존재합니다."),
 
@@ -23,6 +23,9 @@ public enum ErrorStatus implements BaseCode {
 	_S3_CLIENT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "S35002", "S3 클라이언트 오류가 발생했습니다."),
 	_S3_FILE_PROCESSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "S35003", "파일 처리 중 오류가 발생했습니다."),
 	_S3_REMOVE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "S35004", "S3 파일 삭제 중 오류가 발생하였습니다."),
+
+	// Community
+	_COMMUNITY_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMUNITY4001", "삭제되었거나 존재하지 않는 커뮤니티입니다."),
 
 
 	// Resource Error

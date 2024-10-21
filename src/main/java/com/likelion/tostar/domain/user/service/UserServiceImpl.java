@@ -104,17 +104,8 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
-        // <Multipart Image>
-        // 1. 이미지가 존재할 경우 -> 프로필 변경 요청에 해당 ; 기존 이미지 삭제, 새 이미지 저장
-        // 2. 이미지가 존재하지 않을 경우 -> 기본 프로필 변경에 해당 ; 기존 이미지 삭제
-
         // 기존 프로필 이미지 삭제
-        String existingProfileImage = user.getProfileImage();
-        // 기존에 이미지가 존재하며, 아직 S3에 존재하는 경우에 해당
-        if (existingProfileImage != null && !existingProfileImage.isEmpty()) {
-            String fileName = extractFileNameFromUrl(existingProfileImage);
-            s3Service.deleteFile(fileName);
-        }
+        s3Service.deleteFileByURL(user.getProfileImage());
 
         user.changeUserInfo(userInfoDTO); // 회원 정보 수정
 
@@ -135,16 +126,4 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.ok().headers(headers)
                 .body(ApiResponse.onSuccess("Bearer " + accessToken));
     }
-
-    // URL에서 파일명 추출
-    private String extractFileNameFromUrl(String url) {
-        try {
-            // URL에서 파일명 부분만 추출 후, +를 공백으로 되돌리기
-            String decodedUrl = java.net.URLDecoder.decode(url, "UTF-8");  // URL 디코딩
-            return decodedUrl.substring(decodedUrl.lastIndexOf("/") + 1);  // 파일명 추출
-        } catch (Exception e) {
-            throw new GeneralException(ErrorStatus._INTERNAL_SERVER_ERROR);
-        }
-    }
-
 }
