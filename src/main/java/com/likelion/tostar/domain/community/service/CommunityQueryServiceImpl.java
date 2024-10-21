@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CommunityServiceImpl implements CommunityService{
+public class CommunityQueryServiceImpl implements CommunityQueryService {
     private final CommunityRepository communityRepository;
     private final CommunityConverter communityConverter;
     @Override

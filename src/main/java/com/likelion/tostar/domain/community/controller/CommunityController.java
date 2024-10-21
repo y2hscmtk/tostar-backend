@@ -1,17 +1,27 @@
 package com.likelion.tostar.domain.community.controller;
 
-import com.likelion.tostar.domain.community.service.CommunityService;
+import com.likelion.tostar.domain.community.dto.CommunityFormDTO;
+import com.likelion.tostar.domain.community.service.CommunityCommandService;
+import com.likelion.tostar.domain.community.service.CommunityQueryService;
+import com.likelion.tostar.global.jwt.dto.CustomUserDetails;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/controller")
+@RequestMapping("/api/community")
 @RequiredArgsConstructor
 public class CommunityController {
-    private final CommunityService communityService;
+    private final CommunityQueryService communityQueryService;
+    private final CommunityCommandService communityCommandService;
 
     /**
      * 커뮤니티 미리보기(랜덤)
@@ -19,6 +29,19 @@ public class CommunityController {
      */
     @GetMapping("preview/random")
     public ResponseEntity<?> getRandomPreviews() {
-        return communityService.getRandomPreviews();
+        return communityQueryService.getRandomPreviews();
+    }
+
+    /**
+     * 커뮤니티 생성
+     * 생성된 커뮤니티에 해당 회원 저장
+     */
+    @PostMapping()
+    public ResponseEntity<?> createCommunity(
+            @RequestParam("image") MultipartFile image,
+            @ModelAttribute CommunityFormDTO communityFormDTO,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) throws IOException {
+        return communityCommandService
+                .createCommunity(image,communityFormDTO,customUserDetails.getEmail());
     }
 }

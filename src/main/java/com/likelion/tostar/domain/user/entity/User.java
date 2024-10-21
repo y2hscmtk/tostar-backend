@@ -1,6 +1,7 @@
 package com.likelion.tostar.domain.user.entity;
 
 import com.likelion.tostar.domain.community.entity.Community;
+import com.likelion.tostar.domain.community.entity.Member;
 import com.likelion.tostar.domain.user.dto.UserInfoDTO;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -44,6 +45,23 @@ public class User {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Community> myCommunities = new ArrayList<>();
 
+
+
+    //====== 편의 메소드 ======//
+    public void createCommunity(Community community) {
+        // 1. 방장 지정
+        community.changeOwner(this);
+
+        // 2. 해당 User를 커뮤니티의 첫 번째 회원으로 등록
+        Member member = Member.builder()
+                .communityMember(this)
+                .community(community)
+                .build();
+        community.getCommunityMembers().add(member); // member save by CASCADE.ALL
+
+        // 3. 내가 만든 커뮤니티 목록에 저장
+        this.myCommunities.add(community);
+    }
 
     // 회원 정보 수정 메소드
     public void changeUserInfo(UserInfoDTO userInfoDTO) {
