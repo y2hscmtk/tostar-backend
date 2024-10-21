@@ -39,4 +39,8 @@ public class Community {
     @Builder.Default
     @OneToMany(mappedBy = "community", cascade = CascadeType.ALL)
     private List<Member> communityMembers = new ArrayList<>();
+
+    public void changeOwner(User user) {
+        this.owner = user;
+    }
 }

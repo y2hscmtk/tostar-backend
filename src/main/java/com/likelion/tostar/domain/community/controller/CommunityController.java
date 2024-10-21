@@ -1,18 +1,23 @@
 package com.likelion.tostar.domain.community.controller;
 
+import com.likelion.tostar.domain.community.dto.CommunityFormDTO;
 import com.likelion.tostar.domain.community.service.CommunityCommandService;
 import com.likelion.tostar.domain.community.service.CommunityQueryService;
 import com.likelion.tostar.global.jwt.dto.CustomUserDetails;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/controller")
+@RequestMapping("/api/community")
 @RequiredArgsConstructor
 public class CommunityController {
     private final CommunityQueryService communityQueryService;
@@ -33,7 +38,10 @@ public class CommunityController {
      */
     @PostMapping()
     public ResponseEntity<?> createCommunity(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        return communityCommandService.createCommunity(customUserDetails.getEmail());
+            @RequestParam("image") MultipartFile image,
+            @ModelAttribute CommunityFormDTO communityFormDTO,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) throws IOException {
+        return communityCommandService
+                .createCommunity(image,communityFormDTO,customUserDetails.getEmail());
     }
 }
