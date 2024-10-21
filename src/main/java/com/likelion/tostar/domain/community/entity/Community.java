@@ -1,5 +1,6 @@
 package com.likelion.tostar.domain.community.entity;
 
+import com.likelion.tostar.domain.community.dto.CommunityFormDTO;
 import com.likelion.tostar.domain.user.entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -42,5 +43,16 @@ public class Community {
 
     public void changeOwner(User user) {
         this.owner = user;
+    }
+
+    // 커뮤니티 정보 수정
+    public void changeCommunityInfo(CommunityFormDTO communityFormDTO) {
+        this.title = communityFormDTO.getTitle();
+        this.description = communityFormDTO.getDescription();
+    }
+
+    // 이미지 수정
+    public void changeProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 }

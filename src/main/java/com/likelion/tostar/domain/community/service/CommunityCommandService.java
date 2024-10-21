@@ -12,5 +12,6 @@ public interface CommunityCommandService {
     ResponseEntity<?> createCommunity(MultipartFile image, CommunityFormDTO communityFormDTO, String email)
             throws IOException;
 
-    ResponseEntity<?> editCommunity(Long communityId, MultipartFile image, CommunityFormDTO communityFormDTO, String email);
+    ResponseEntity<?> editCommunity(Long communityId, MultipartFile image, CommunityFormDTO communityFormDTO, String email)
+            throws IOException;
 }
