@@ -72,4 +72,9 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
 
         return ResponseEntity.ok(ApiResponse.onSuccess("커뮤니티가 수정되었습니다."));
     }
+
+    @Override
+    public ResponseEntity<?> deleteCommunity(Long communityId, String email) {
+        return null;
+    }
 }
