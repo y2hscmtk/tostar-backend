@@ -3,6 +3,7 @@ package com.likelion.tostar.domain.community.service;
 import com.likelion.tostar.domain.community.converter.CommunityConverter;
 import com.likelion.tostar.domain.community.dto.CommunityFormDTO;
 import com.likelion.tostar.domain.community.entity.Community;
+import com.likelion.tostar.domain.community.entity.Member;
 import com.likelion.tostar.domain.community.repository.CommunityRepository;
 import com.likelion.tostar.domain.community.repository.MemberRepository;
 import com.likelion.tostar.domain.user.entity.User;
@@ -109,6 +110,23 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
         // 4. 커뮤니티 가입
         community.addMember(user); // CASCADE에 의해 member 객체 저장됨
         return ResponseEntity.ok(ApiResponse.onSuccess("커뮤니티 가입에 성공하였습니다."));
+    }
+
+    @Override
+    public ResponseEntity<?> leaveCommunity(Long communityId, String email) {
+        // 1. 회원 정보 조회
+        User user = findUserByEmail(email);
+        // 2. 커뮤니티 존재 확인
+        Community community = findCommunityById(communityId);
+        // 3. 커뮤니티 멤버 정보 조회
+        Member member = memberRepository.findMembership(community, user)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._MEMBER_NOT_FOUND));
+
+        // 4. 커뮤니티 탈퇴
+        community.deleteMember(member);
+        memberRepository.delete(member);
+
+        return ResponseEntity.ok(ApiResponse.onSuccess("커뮤니티 탈퇴에 성공하였습니다."));
     }
 
     private User findUserByEmail(String email) {
