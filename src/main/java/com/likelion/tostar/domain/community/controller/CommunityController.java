@@ -70,4 +70,14 @@ public class CommunityController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return communityCommandService.deleteCommunity(communityId, customUserDetails.getEmail());
     }
+
+    /**
+     * 커뮤니티 가입
+     */
+    @PostMapping("/{communityId}/join")
+    public ResponseEntity<?> joinCommunity(
+            @PathVariable("communityId") Long communityId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return communityCommandService.joinCommunity(communityId, customUserDetails.getEmail());
+    }
 }

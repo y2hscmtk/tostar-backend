@@ -94,4 +94,12 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
 
         return ResponseEntity.ok(ApiResponse.onSuccess("커뮤니티가 삭제되었습니다."));
     }
+
+    /**
+     * 커뮤니티 가입
+     */
+    @Override
+    public ResponseEntity<?> joinCommunity(Long communityId, String email) {
+        return null;
+    }
 }
