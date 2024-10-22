@@ -51,6 +51,10 @@ public class Community {
         this.communityMembers.add(newMember);
     }
 
+    public void deleteMember(Member member) {
+        this.communityMembers.remove(member);
+    }
+
 
     public void changeOwner(User user) {
         this.owner = user;
