@@ -18,4 +18,6 @@ public interface CommunityCommandService {
     ResponseEntity<?> deleteCommunity(Long communityId, String email);
 
     ResponseEntity<?> joinCommunity(Long communityId, String email);
+
+    ResponseEntity<?> leaveCommunity(Long communityId, String email);
 }

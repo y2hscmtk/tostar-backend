@@ -111,6 +111,11 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
         return ResponseEntity.ok(ApiResponse.onSuccess("커뮤니티 가입에 성공하였습니다."));
     }
 
+    @Override
+    public ResponseEntity<?> leaveCommunity(Long communityId, String email) {
+        return null;
+    }
+
     private User findUserByEmail(String email) {
         return userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));

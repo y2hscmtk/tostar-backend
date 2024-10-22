@@ -80,4 +80,14 @@ public class CommunityController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return communityCommandService.joinCommunity(communityId, customUserDetails.getEmail());
     }
+
+    /**
+     * 커뮤니티 탈퇴
+     */
+    @PostMapping("/{communityId}/leave")
+    public ResponseEntity<?> leaveCommunity(
+            @PathVariable("communityId") Long communityId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return communityCommandService.leaveCommunity(communityId, customUserDetails.getEmail());
+    }
 }
