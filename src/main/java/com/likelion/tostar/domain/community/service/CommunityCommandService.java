@@ -16,4 +16,6 @@ public interface CommunityCommandService {
             throws IOException;
 
     ResponseEntity<?> deleteCommunity(Long communityId, String email);
+
+    ResponseEntity<?> joinCommunity(Long communityId, String email);
 }

@@ -41,6 +41,17 @@ public class Community {
     @OneToMany(mappedBy = "community", cascade = CascadeType.ALL)
     private List<Member> communityMembers = new ArrayList<>();
 
+
+    // ==== 편의 메소드 ==== //
+    public void addMember(User user) {
+        Member newMember = Member.builder()
+                .communityMember(user)
+                .community(this)
+                .build();
+        this.communityMembers.add(newMember);
+    }
+
+
     public void changeOwner(User user) {
         this.owner = user;
     }

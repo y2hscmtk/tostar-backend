@@ -17,6 +17,8 @@ public enum ErrorStatus implements BaseCode {
 	PASSWORD_NOT_CORRECT(HttpStatus.FORBIDDEN, "USER4002", "비밀번호가 일치하지 않습니다."),
 	_USER_IS_EXISTS(HttpStatus.FORBIDDEN, "USER4003", "해당하는 사용자가 이미 존재합니다."),
 
+	// Member Error
+	_MEMBER_ALREADY_JOINED(HttpStatus.FORBIDDEN, "MEMBER4001", "이미 커뮤니티에 존재하는 회원입니다."),
 
 	// S3 Error
 	_S3_UPLOAD_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "S35001", "S3에 파일 업로드 중 오류가 발생했습니다."),
