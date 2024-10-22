@@ -16,6 +16,7 @@ public class CommunityConverter {
 
     public CommunityPreviewResponseDTO toCommunityPreviewResponseDTO(Community community) {
         return CommunityPreviewResponseDTO.builder()
+                .communityId(community.getId())
                 .profileImage(community.getProfileImage())
                 .title(community.getTitle())
                 .description(community.getDescription())
