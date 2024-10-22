@@ -30,8 +30,7 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
     public ResponseEntity<?> createCommunity(
             MultipartFile image, CommunityFormDTO communityFormDTO, String email) throws IOException {
         // 1. 회원 정보 조회
-        User user = userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+        User user = findUserByEmail(email);
 
         // 2. 커뮤니티 생성
         Community community = communityConverter.toCommunity(image,communityFormDTO);
@@ -48,12 +47,10 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
             Long communityId, MultipartFile image,
             CommunityFormDTO communityFormDTO, String email) throws IOException {
         // 1. 회원 정보 조회
-        User user = userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+        User user = findUserByEmail(email);
 
         // 2. 커뮤니티 존재 확인
-        Community community = communityRepository.findById(communityId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._COMMUNITY_NOT_FOUND));
+        Community community = findCommunityById(communityId);
 
         // 3. 회원이 커뮤니티 주인인지 확인
         if (!community.getOwner().equals(user)) {
@@ -76,12 +73,10 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
     @Override
     public ResponseEntity<?> deleteCommunity(Long communityId, String email) {
         // 1. 회원 정보 조회
-        User user = userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+        User user = findUserByEmail(email);
 
         // 2. 커뮤니티 존재 확인
-        Community community = communityRepository.findById(communityId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._COMMUNITY_NOT_FOUND));
+        Community community = findCommunityById(communityId);
 
         // 3. 회원이 커뮤니티 주인인지 확인
         if (!community.getOwner().equals(user)) {
@@ -100,6 +95,24 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
      */
     @Override
     public ResponseEntity<?> joinCommunity(Long communityId, String email) {
+        // 1. 회원 정보 조회
+
+        // 2. 커뮤니티 존재 확인
+
+        // 3. 이미 커뮤니티 회원인지 확인
+
+        // 4. 커뮤니티 가입
+
         return null;
+    }
+
+    private User findUserByEmail(String email) {
+        return userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+    }
+
+    private Community findCommunityById(Long communityId) {
+        return communityRepository.findById(communityId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._COMMUNITY_NOT_FOUND));
     }
 }
