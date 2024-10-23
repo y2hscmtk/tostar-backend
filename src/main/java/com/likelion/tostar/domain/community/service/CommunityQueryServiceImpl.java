@@ -8,6 +8,7 @@ import com.likelion.tostar.global.response.ApiResponse;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -30,5 +31,10 @@ public class CommunityQueryServiceImpl implements CommunityQueryService {
         }
 
         return ResponseEntity.ok(ApiResponse.onSuccess(responseDTO));
+    }
+
+    @Override
+    public ResponseEntity<?> getAllPreviews(Pageable pageable) {
+        return null;
     }
 }

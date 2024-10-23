@@ -1,5 +1,6 @@
 package com.likelion.tostar.domain.community.service;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -7,4 +8,6 @@ import org.springframework.http.ResponseEntity;
  */
 public interface CommunityQueryService {
     ResponseEntity<?> getRandomPreviews();
+
+    ResponseEntity<?> getAllPreviews(Pageable pageable);
 }
