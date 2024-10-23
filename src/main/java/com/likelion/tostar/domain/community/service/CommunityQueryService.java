@@ -11,5 +11,5 @@ public interface CommunityQueryService {
 
     ResponseEntity<?> getAllPreviews(Pageable pageable);
 
-    ResponseEntity<?> getMyCommunities(Pageable pageable);
+    ResponseEntity<?> getMyCommunities(Pageable pageable, String email);
 }

@@ -4,6 +4,11 @@ import com.likelion.tostar.domain.community.converter.CommunityConverter;
 import com.likelion.tostar.domain.community.dto.CommunityPreviewResponseDTO;
 import com.likelion.tostar.domain.community.entity.Community;
 import com.likelion.tostar.domain.community.repository.CommunityRepository;
+import com.likelion.tostar.domain.community.repository.MemberRepository;
+import com.likelion.tostar.domain.user.entity.User;
+import com.likelion.tostar.domain.user.repository.UserRepository;
+import com.likelion.tostar.global.enums.statuscode.ErrorStatus;
+import com.likelion.tostar.global.exception.GeneralException;
 import com.likelion.tostar.global.response.ApiResponse;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +22,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CommunityQueryServiceImpl implements CommunityQueryService {
+public class CommunityQueryServiceImpl implements CommunityQueryService{
+    private final UserRepository userRepository;
     private final CommunityRepository communityRepository;
+    private final MemberRepository memberRepository;
     private final CommunityConverter communityConverter;
     @Override
     public ResponseEntity<?> getRandomPreviews() {
@@ -53,8 +60,24 @@ public class CommunityQueryServiceImpl implements CommunityQueryService {
     }
 
     @Override
-    public ResponseEntity<?> getMyCommunities(Pageable pageable) {
-        return null;
+    public ResponseEntity<?> getMyCommunities(Pageable pageable, String email) {
+        // 1. 회원 정보 조회
+        User user = findUserByEmail(email);
+
+        // 2. 정렬 기준 설정
+        Pageable defaultPageable = getDefaultPageable(pageable);
+
+        // 2. 연관된 회원 정보 조회
+        Page<Community> myCommunities = memberRepository.findMyCommunities(user, defaultPageable);
+
+        // 4. 반환 DTO 작성
+        List<CommunityPreviewResponseDTO> resultDTOList = new ArrayList<>();
+        for (Community community : myCommunities.getContent()) {
+            resultDTOList.add(
+                    communityConverter.toCommunityPreviewResponseDTO(community));
+        }
+
+        return ResponseEntity.ok(ApiResponse.onSuccess(resultDTOList));
     }
 
     /**
@@ -66,5 +89,10 @@ public class CommunityQueryServiceImpl implements CommunityQueryService {
                 pageable.getPageSize(),
                 Sort.by(Sort.Direction.DESC, "createdAt")
         );
+    }
+
+    private User findUserByEmail(String email) {
+        return userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
     }
 }
