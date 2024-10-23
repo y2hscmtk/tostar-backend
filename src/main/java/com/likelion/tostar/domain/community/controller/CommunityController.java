@@ -45,6 +45,16 @@ public class CommunityController {
     }
 
     /**
+     * 내가 참여중인 커뮤니티 미리보기(최신 참여순)
+     */
+    @GetMapping("preview/my")
+    public ResponseEntity<?> getMyCommunities(
+            Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return communityQueryService.getMyCommunities(pageable,customUserDetails.getEmail());
+    }
+
+    /**
      * 커뮤니티 생성
      * 생성된 커뮤니티에 해당 회원 저장
      */
