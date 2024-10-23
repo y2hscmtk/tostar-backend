@@ -8,6 +8,10 @@ import com.likelion.tostar.global.response.ApiResponse;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -30,5 +34,33 @@ public class CommunityQueryServiceImpl implements CommunityQueryService {
         }
 
         return ResponseEntity.ok(ApiResponse.onSuccess(responseDTO));
+    }
+
+    @Override
+    public ResponseEntity<?> getAllPreviews(Pageable pageable) {
+        Pageable defaultPageable = getDefaultPageable(pageable); // 최신 생성순 조회
+
+        Page<Community> allCommunities = communityRepository.findAll(defaultPageable);
+
+        // 반환 DTO 작성
+        ArrayList<CommunityPreviewResponseDTO> resultDTOList = new ArrayList<>();
+        for (Community community : allCommunities.getContent()) {
+            resultDTOList.add(
+                    communityConverter.toCommunityPreviewResponseDTO(community));
+        }
+
+        return ResponseEntity.ok(ApiResponse.onSuccess(resultDTOList));
+    }
+
+
+    /**
+     * 정렬 기준 : 최신 작성(생성) 순
+     */
+    public Pageable getDefaultPageable(Pageable pageable) {
+        return PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(Sort.Direction.DESC, "createdAt")
+        );
     }
 }

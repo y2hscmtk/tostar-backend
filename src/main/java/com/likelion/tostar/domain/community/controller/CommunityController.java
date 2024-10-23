@@ -6,6 +6,7 @@ import com.likelion.tostar.domain.community.service.CommunityQueryService;
 import com.likelion.tostar.global.jwt.dto.CustomUserDetails;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,6 +37,14 @@ public class CommunityController {
     }
 
     /**
+     * 모든 커뮤니티 미리보기(최신 작성순)
+     */
+    @GetMapping("preview/all")
+    public ResponseEntity<?> getAllPreviews(Pageable pageable) {
+        return communityQueryService.getAllPreviews(pageable);
+    }
+
+    /**
      * 커뮤니티 생성
      * 생성된 커뮤니티에 해당 회원 저장
      */
@@ -44,8 +53,9 @@ public class CommunityController {
             @RequestParam("image") MultipartFile image,
             @ModelAttribute CommunityFormDTO communityFormDTO,
             @AuthenticationPrincipal CustomUserDetails customUserDetails) throws IOException {
+
         return communityCommandService
-                .createCommunity(image,communityFormDTO,customUserDetails.getEmail());
+                .createCommunity(image, communityFormDTO, customUserDetails.getEmail());
     }
 
     /**
