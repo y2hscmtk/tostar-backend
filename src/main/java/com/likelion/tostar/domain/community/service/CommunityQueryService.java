@@ -10,4 +10,6 @@ public interface CommunityQueryService {
     ResponseEntity<?> getRandomPreviews();
 
     ResponseEntity<?> getAllPreviews(Pageable pageable);
+
+    ResponseEntity<?> getMyCommunities(Pageable pageable);
 }

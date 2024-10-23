@@ -52,6 +52,10 @@ public class CommunityQueryServiceImpl implements CommunityQueryService {
         return ResponseEntity.ok(ApiResponse.onSuccess(resultDTOList));
     }
 
+    @Override
+    public ResponseEntity<?> getMyCommunities(Pageable pageable) {
+        return null;
+    }
 
     /**
      * 정렬 기준 : 최신 작성(생성) 순
