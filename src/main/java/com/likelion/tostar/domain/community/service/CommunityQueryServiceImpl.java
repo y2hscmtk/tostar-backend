@@ -2,6 +2,7 @@ package com.likelion.tostar.domain.community.service;
 
 import com.likelion.tostar.domain.community.converter.CommunityConverter;
 import com.likelion.tostar.domain.community.dto.CommunityPreviewResponseDTO;
+import com.likelion.tostar.domain.community.dto.CommunityProfileResponseDTO;
 import com.likelion.tostar.domain.community.entity.Community;
 import com.likelion.tostar.domain.community.repository.CommunityRepository;
 import com.likelion.tostar.domain.community.repository.MemberRepository;
@@ -80,6 +81,14 @@ public class CommunityQueryServiceImpl implements CommunityQueryService{
         return ResponseEntity.ok(ApiResponse.onSuccess(resultDTOList));
     }
 
+    @Override
+    public ResponseEntity<?> getCommunityPreview(Long communityId) {
+        Community community = findCommunityById(communityId);
+        CommunityProfileResponseDTO resultDTO = communityConverter.toCommunityProfileResponseDTO(
+                community);
+        return ResponseEntity.ok(ApiResponse.onSuccess(resultDTO));
+    }
+
     /**
      * 정렬 기준 : 최신 작성(생성) 순
      */
@@ -94,5 +103,10 @@ public class CommunityQueryServiceImpl implements CommunityQueryService{
     private User findUserByEmail(String email) {
         return userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+    }
+
+    private Community findCommunityById(Long communityId) {
+        return communityRepository.findById(communityId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._COMMUNITY_NOT_FOUND));
     }
 }

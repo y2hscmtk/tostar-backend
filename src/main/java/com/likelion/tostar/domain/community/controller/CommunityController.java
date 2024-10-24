@@ -55,6 +55,14 @@ public class CommunityController {
     }
 
     /**
+     * 특정 커뮤니티 미리보기
+     */
+    @GetMapping("{communityId}/preview")
+    public ResponseEntity<?> getCommunityPreview(@PathVariable("communityId") Long communityId) {
+        return communityQueryService.getCommunityPreview(communityId);
+    }
+
+    /**
      * 커뮤니티 생성
      * 생성된 커뮤니티에 해당 회원 저장
      */
