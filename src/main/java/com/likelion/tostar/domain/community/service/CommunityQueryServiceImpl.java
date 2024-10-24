@@ -80,6 +80,11 @@ public class CommunityQueryServiceImpl implements CommunityQueryService{
         return ResponseEntity.ok(ApiResponse.onSuccess(resultDTOList));
     }
 
+    @Override
+    public ResponseEntity<?> getCommunityPreview(Long communityId) {
+        return null;
+    }
+
     /**
      * 정렬 기준 : 최신 작성(생성) 순
      */
