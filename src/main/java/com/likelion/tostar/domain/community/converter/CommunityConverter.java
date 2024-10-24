@@ -2,7 +2,9 @@ package com.likelion.tostar.domain.community.converter;
 
 import com.likelion.tostar.domain.community.dto.CommunityFormDTO;
 import com.likelion.tostar.domain.community.dto.CommunityPreviewResponseDTO;
+import com.likelion.tostar.domain.community.dto.CommunityProfileResponseDTO;
 import com.likelion.tostar.domain.community.entity.Community;
+import com.likelion.tostar.domain.user.entity.User;
 import com.likelion.tostar.global.s3.service.S3Service;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,19 @@ public class CommunityConverter {
                 .profileImage(s3Service.uploadFile(image))
                 .title(communityFormDTO.getTitle())
                 .description(communityFormDTO.getDescription())
+                .build();
+    }
+
+    public CommunityProfileResponseDTO toCommunityProfileResponseDTO(Community community) {
+        User owner = community.getOwner();
+        return CommunityProfileResponseDTO.builder()
+                .ownerEmail(owner.getEmail())
+                .ownerPetName(owner.getPetName())
+                .ownerPetProfileImage(owner.getProfileImage())
+                .communityId(community.getId())
+                .communityProfileImage(community.getProfileImage())
+                .communityDescription(community.getDescription())
+                .communityName(community.getTitle())
                 .build();
     }
 }
