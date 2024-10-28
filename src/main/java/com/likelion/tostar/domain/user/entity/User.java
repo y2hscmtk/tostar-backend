@@ -77,4 +77,5 @@ public class User {
     public void changeProfileImage(String profileImage) {
         this.profileImage = profileImage;
     }
+
 }

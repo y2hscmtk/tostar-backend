@@ -66,10 +66,10 @@ public class UserController {
     @GetMapping("/search")
     public ResponseEntity<?> search(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam("name") String name,
-            @RequestParam("page") int page,
-            @RequestParam("size") int size){
-        return userService.search(customUserDetails,name,page,size);
+            @RequestParam("name") String petName,
+            @RequestParam(value = "page", defaultValue = "0") int page,  // 디폴트 값 : 0
+            @RequestParam(value = "size", defaultValue = "5") int size){ // 디폴트 값 : 5
+        return userService.search(customUserDetails.getEmail(),petName,page,size);
     }
 
 }
