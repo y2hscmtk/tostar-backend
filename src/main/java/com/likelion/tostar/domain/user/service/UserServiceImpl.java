@@ -189,8 +189,11 @@ public class UserServiceImpl implements UserService {
         }
 
         // 409 : 이미 친구인 경우
-        Relationship foundRelationship = relationshipRepository.findByUsers(firstUser, secondUser)
-                .orElseThrow(() -> new GeneralException(ErrorStatus._FRIEND_ALREADY_EXISTS));
+        Optional<Relationship> foundRelationship = relationshipRepository.findByUsers(firstUser, secondUser);
+        if (foundRelationship.isPresent()) {
+            return ResponseEntity.status(409)
+                    .body(ApiResponse.onFailure(ErrorStatus._FRIEND_ALREADY_EXISTS, null));
+        }
 
         // save
         Relationship relationship = Relationship.builder()
@@ -201,15 +204,35 @@ public class UserServiceImpl implements UserService {
 
         // 200 : 친구 추가 성공
         return ResponseEntity.status(200)
-                .body(ApiResponse.onSuccess("친구추가에 성공했습니다."));
+                .body(ApiResponse.onSuccess("친구 추가에 성공했습니다."));
     }
+
     /**
     * 친구 전체 조회
     */
     @Override
-    public ResponseEntity<?> searchFriend(Long id) {
-
-        return null;
+    public ResponseEntity<?> searchFriend(Long userId) {
+        List<Relationship> relationships = relationshipRepository.findAllByUserId(userId);
+        List<SearchFriendListDto> result = new ArrayList<>();
+        for (Relationship relationship : relationships) {
+            User user;
+            // user1이 자신인 경우, user2가 친구
+            if (relationship.getUser1().getId().equals(userId)) {
+                user = relationship.getUser2();
+            } else { // user2가 자신인 경우, user1이 친구
+                user = relationship.getUser1();
+            }
+            // data 가공
+            SearchFriendListDto data = SearchFriendListDto.builder()
+                    .id(user.getId())
+                    .petName(user.getPetName())
+                    .profileImage(user.getProfileImage())
+                    .build();
+            result.add(data);
+        }
+        // 200 : 조회 성공
+        return ResponseEntity.status(200)
+                .body(ApiResponse.onSuccess(result));
     }
 
     // 회원 가입 & 로그인 성공시 JWT 생성 후 반환
