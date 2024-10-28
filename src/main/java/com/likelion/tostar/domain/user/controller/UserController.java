@@ -79,7 +79,7 @@ public class UserController {
     @PostMapping("/friend")
     public ResponseEntity<?> addFriend(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestBody()AddFriendDto addFriendDto){
+            @RequestBody AddFriendDto addFriendDto){
         return userService.addFriend(customUserDetails.getEmail(), addFriendDto);
     }
 
