@@ -9,6 +9,7 @@ import com.likelion.tostar.domain.user.entity.User;
 import com.likelion.tostar.domain.user.repository.UserRepository;
 import com.likelion.tostar.global.enums.statuscode.ErrorStatus;
 import com.likelion.tostar.global.exception.GeneralException;
+import com.likelion.tostar.global.jwt.dto.CustomUserDetails;
 import com.likelion.tostar.global.jwt.util.JwtUtil;
 import com.likelion.tostar.global.response.ApiResponse;
 import com.likelion.tostar.global.s3.service.S3Service;
@@ -115,6 +116,14 @@ public class UserServiceImpl implements UserService {
         }
 
         return ResponseEntity.ok(ApiResponse.onSuccess("회원정보가 수정되었습니다."));
+    }
+
+    /**
+    회웑 검색
+     */
+    @Override
+    public ResponseEntity<?> search(CustomUserDetails customUserDetails, String name, int page, int size) {
+        return null;
     }
 
     // 회원 가입 & 로그인 성공시 JWT 생성 후 반환

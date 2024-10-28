@@ -59,4 +59,17 @@ public class UserController {
             @Valid @ModelAttribute UserInfoDTO userInfoDTO) throws IOException {
         return userService.edit(image, userInfoDTO, customUserDetails.getEmail());
     }
+
+    /**
+     * 회원 검색
+     */
+    @GetMapping("/search")
+    public ResponseEntity<?> search(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam("name") String name,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size){
+        return userService.search(customUserDetails,name,page,size);
+    }
+
 }
