@@ -127,9 +127,9 @@ public class UserServiceImpl implements UserService {
     회원 검색
      */
     @Override
-    public ResponseEntity<?> search(String email, String petName, int page, int size) {
+    public ResponseEntity<?> searchUser(Long userId, String petName, int page, int size) {
         // 해당 회원이 실제로 존재 하는지 확인
-        User foundUser = userRepository.findUserByEmail(email)
+        User foundUser = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
         // 400 : 검색할 애완동물 이름 누락
@@ -175,7 +175,6 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
         // 404 : 친구 id에 해당하는 user가 없는 경우
-
         User friend = userRepository.findById(addFriendDto.getFriendId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._FRIEND_NOT_FOUND));
 
@@ -188,13 +187,10 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.status(409)
                     .body(ApiResponse.onFailure(ErrorStatus._SELF_FRIEND_REQUEST_NOT_ALLOWED, null));
         }
-        Optional<Relationship> foundRelationship = relationshipRepository.findByUsers(firstUser, secondUser);
 
         // 409 : 이미 친구인 경우
-        if (foundRelationship.isPresent()) {
-            return ResponseEntity.status(409)
-                    .body(ApiResponse.onFailure(ErrorStatus._FRIEND_ALREADY_EXISTS, null));
-        }
+        Relationship foundRelationship = relationshipRepository.findByUsers(firstUser, secondUser)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._FRIEND_ALREADY_EXISTS));
 
         // save
         Relationship relationship = Relationship.builder()
