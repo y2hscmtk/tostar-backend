@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
         // 400 - 검색할 애완동물 이름 누락
-        if (petName.isEmpty()) {
+        if (petName.isBlank()) {
             return ResponseEntity.status(400)
                     .body(ApiResponse.onFailure(ErrorStatus._BAD_REQUEST, "잘못된 요청입니다. 검색할 애완동물 이름을 입력해주세요."));
         }
