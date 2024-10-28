@@ -36,7 +36,7 @@ public class UserController {
     @PostMapping("/join")
     public ResponseEntity<?> join(
             @RequestParam("image") MultipartFile image,
-            @Valid @ModelAttribute UserJoinDTO userJoinDTO) throws IOException  {
+            @Valid @ModelAttribute UserJoinDTO userJoinDTO) throws IOException {
         return userService.join(image, userJoinDTO);
     }
 
@@ -65,12 +65,12 @@ public class UserController {
      * 회원 검색
      */
     @GetMapping("/search")
-    public ResponseEntity<?> search(
+    public ResponseEntity<?> searchUser(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam("name") String petName,
             @RequestParam(value = "page", defaultValue = "0") int page,  // 디폴트 값 : 0
-            @RequestParam(value = "size", defaultValue = "5") int size){ // 디폴트 값 : 5
-        return userService.search(customUserDetails.getEmail(),petName,page,size);
+            @RequestParam(value = "size", defaultValue = "5") int size) { // 디폴트 값 : 5
+        return userService.searchUser(customUserDetails.getId(), petName, page, size);
     }
 
     /**
@@ -79,8 +79,16 @@ public class UserController {
     @PostMapping("/friend")
     public ResponseEntity<?> addFriend(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestBody AddFriendDto addFriendDto){
+            @RequestBody AddFriendDto addFriendDto) {
         return userService.addFriend(customUserDetails.getEmail(), addFriendDto);
     }
 
+    /**
+     * 친구 전체 조회
+     */
+    @GetMapping("/friend")
+    public ResponseEntity<?> searchFriend(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return userService.searchFriend(customUserDetails.getId());
+    }
 }
