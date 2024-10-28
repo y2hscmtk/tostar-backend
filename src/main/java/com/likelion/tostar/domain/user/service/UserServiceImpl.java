@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
         User foundUser = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
-        // 400 - 검색할 애완동물 이름 누락
+        // 400 : 검색할 애완동물 이름 누락
         if (petName.isBlank()) {
             return ResponseEntity.status(400)
                     .body(ApiResponse.onFailure(ErrorStatus._BAD_REQUEST, "잘못된 요청입니다. 검색할 애완동물 이름을 입력해주세요."));
@@ -139,7 +139,7 @@ public class UserServiceImpl implements UserService {
         Page<User> users = userRepository.findByPetNameContaining(petName, pageRequest);
 
         // 오류 확인 로그
-//        System.out.println("회원 개수: " +  users.getTotalElements());
+//        System.out.println("총 개수: " +  users.getTotalElements());
 //        System.out.println("페이지 내용: " + users.getContent());
 
         // data 가공
@@ -151,12 +151,12 @@ public class UserServiceImpl implements UserService {
                     .profileImage(user.getProfileImage())
                     .category(user.getCategory())
                     .birthday(user.getBirthday().toString())
-                    .starDay(user.getStarDay() != null ? user.getStarDay().toString() : null)
+                    .starDay(user.getStarDay().toString())
                     .build();
             data.add(dto);
         }
 
-        // 200 - 검색 성공
+        // 200 : 검색 성공
         return ResponseEntity.status(200)
                 .body(ApiResponse.onSuccess(data));
     }

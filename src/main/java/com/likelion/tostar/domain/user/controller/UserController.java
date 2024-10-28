@@ -1,5 +1,6 @@
 package com.likelion.tostar.domain.user.controller;
 
+import com.likelion.tostar.domain.user.dto.AddFriendDto;
 import com.likelion.tostar.domain.user.dto.UserInfoDTO;
 import com.likelion.tostar.domain.user.dto.UserJoinDTO;
 import com.likelion.tostar.domain.user.dto.LoginRequestDTO;
@@ -70,6 +71,16 @@ public class UserController {
             @RequestParam(value = "page", defaultValue = "0") int page,  // 디폴트 값 : 0
             @RequestParam(value = "size", defaultValue = "5") int size){ // 디폴트 값 : 5
         return userService.search(customUserDetails.getEmail(),petName,page,size);
+    }
+
+    /**
+     * 친구 추가
+     */
+    @PostMapping("/friend")
+    public ResponseEntity<?> addFriend(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestBody()AddFriendDto addFriendDto){
+        return userService.addFriend(customUserDetails.getEmail(), addFriendDto);
     }
 
 }

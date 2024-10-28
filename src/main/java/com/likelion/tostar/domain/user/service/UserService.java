@@ -1,5 +1,6 @@
 package com.likelion.tostar.domain.user.service;
 
+import com.likelion.tostar.domain.user.dto.AddFriendDto;
 import com.likelion.tostar.domain.user.dto.LoginRequestDTO;
 import com.likelion.tostar.domain.user.dto.UserInfoDTO;
 import com.likelion.tostar.domain.user.dto.UserJoinDTO;
@@ -14,4 +15,5 @@ public interface UserService {
     ResponseEntity<?> info(String email);
     ResponseEntity<?> edit(MultipartFile image, UserInfoDTO userInfoDTO, String email) throws IOException;
     ResponseEntity<?> search(String email, String petName, int page, int size);
+    ResponseEntity<?> addFriend(String email, AddFriendDto addFriendDto);
 }
