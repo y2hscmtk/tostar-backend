@@ -212,24 +212,29 @@ public class UserServiceImpl implements UserService {
     */
     @Override
     public ResponseEntity<?> searchFriend(Long userId) {
+        // userId와 관계를 갖는 모든 relationships 불러오기
         List<Relationship> relationships = relationshipRepository.findAllByUserId(userId);
         List<SearchFriendListDto> result = new ArrayList<>();
+
+        // 관계에서 해당 userId의 친구들 찾기
         for (Relationship relationship : relationships) {
-            User user;
+            User friend;
             // user1이 자신인 경우, user2가 친구
             if (relationship.getUser1().getId().equals(userId)) {
-                user = relationship.getUser2();
+                friend = relationship.getUser2();
             } else { // user2가 자신인 경우, user1이 친구
-                user = relationship.getUser1();
+                friend = relationship.getUser1();
             }
+
             // data 가공
             SearchFriendListDto data = SearchFriendListDto.builder()
-                    .id(user.getId())
-                    .petName(user.getPetName())
-                    .profileImage(user.getProfileImage())
+                    .id(friend.getId())
+                    .petName(friend.getPetName())
+                    .profileImage(friend.getProfileImage())
                     .build();
             result.add(data);
         }
+
         // 200 : 조회 성공
         return ResponseEntity.status(200)
                 .body(ApiResponse.onSuccess(result));
