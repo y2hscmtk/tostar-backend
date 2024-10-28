@@ -17,9 +17,13 @@ public enum ErrorStatus implements BaseCode {
 	PASSWORD_NOT_CORRECT(HttpStatus.FORBIDDEN, "USER4002", "비밀번호가 일치하지 않습니다."),
 	_USER_IS_EXISTS(HttpStatus.FORBIDDEN, "USER4003", "해당하는 사용자가 이미 존재합니다."),
 
+	// Friend Error
+	_FRIEND_NOT_FOUND(HttpStatus.NOT_FOUND, "FRIEND4041", "친구 ID에 해당하는 회원이 없습니다."),
+	_FRIEND_ALREADY_EXISTS(HttpStatus.CONFLICT, "FRIEND4091", "이미 친구로 등록된 사용자입니다."),
+	_SELF_FRIEND_REQUEST_NOT_ALLOWED(HttpStatus.CONFLICT, "FRIEND4092", "자기 자신과는 친구를 맺을 수 없습니다"),
+
 	// Member Error
 	_MEMBER_ALREADY_JOINED(HttpStatus.FORBIDDEN, "MEMBER4001", "이미 커뮤니티에 존재하는 회원입니다."),
-
 	_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER4002", "이미 탈퇴되었거나 커뮤니티에 존재하지 않는 회원입니다."),
 
 	// S3 Error
