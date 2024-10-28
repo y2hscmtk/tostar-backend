@@ -84,12 +84,11 @@ public class UserController {
     }
 
     /**
-     * 친구 조회
+     * 친구 전체 조회
      */
     @GetMapping("/friend")
     public ResponseEntity<?> searchFriend(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
-            ) {
-        return userService.searchFriend();
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return userService.searchFriend(customUserDetails.getId());
     }
 }

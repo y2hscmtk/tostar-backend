@@ -16,4 +16,5 @@ public interface UserService {
     ResponseEntity<?> edit(MultipartFile image, UserInfoDTO userInfoDTO, String email) throws IOException;
     ResponseEntity<?> searchUser(Long userId, String petName, int page, int size);
     ResponseEntity<?> addFriend(String email, AddFriendDto addFriendDto);
+    ResponseEntity<?> searchFriend(Long id);
 }

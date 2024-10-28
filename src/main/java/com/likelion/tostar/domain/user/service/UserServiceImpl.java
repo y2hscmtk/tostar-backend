@@ -178,7 +178,7 @@ public class UserServiceImpl implements UserService {
         User friend = userRepository.findById(addFriendDto.getFriendId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._FRIEND_NOT_FOUND));
 
-        // relationship 테이블 탐색을 위한 id 순서대로 정렬
+        // (효과적인) relationship 테이블 탐색을 위한 id 순서대로 정렬
         User firstUser = (user.getId() < friend.getId()) ? user : friend; // 더 작은 id를 가진 회원
         User secondUser = (user.getId() < friend.getId()) ? friend : user; // 더 큰 id를 가진 회원
 
@@ -202,6 +202,14 @@ public class UserServiceImpl implements UserService {
         // 200 : 친구 추가 성공
         return ResponseEntity.status(200)
                 .body(ApiResponse.onSuccess("친구추가에 성공했습니다."));
+    }
+    /**
+    * 친구 전체 조회
+    */
+    @Override
+    public ResponseEntity<?> searchFriend(Long id) {
+
+        return null;
     }
 
     // 회원 가입 & 로그인 성공시 JWT 생성 후 반환
