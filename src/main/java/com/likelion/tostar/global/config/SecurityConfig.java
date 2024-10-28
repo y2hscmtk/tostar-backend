@@ -5,6 +5,9 @@ import com.likelion.tostar.global.jwt.handler.CustomAccessDeniedHandler;
 import com.likelion.tostar.global.jwt.handler.CustomAuthenticationEntryPoint;
 import com.likelion.tostar.global.jwt.service.CustomUserDetailsService;
 import com.likelion.tostar.global.jwt.util.JwtUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +17,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -39,6 +44,20 @@ public class SecurityConfig {
         http
                 .formLogin(auth -> auth.disable())
                 .httpBasic(auth -> auth.disable());
+
+        // CORS 세팅
+        http
+                .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
+                    CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
+                    configuration.setAllowedMethods(Collections.singletonList("*"));
+                    configuration.setAllowCredentials(true);
+                    configuration.setAllowedHeaders(Collections.singletonList("*"));
+                    configuration.setMaxAge(3600L);
+
+                    return configuration;
+                }));
+
 
         // JWT 검증 필터를 UsernamePasswordAuthenticationFilter 앞에 추가
         http
