@@ -13,7 +13,7 @@ import java.io.IOException;
 
 @Configuration
 public class OpenAiConfig {
-    // api key 주입
+    // api key
     @Value("${openai.api.key}")
     private String openAiKey;
 
