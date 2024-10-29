@@ -31,8 +31,9 @@ public class Letter extends BaseEntity {
     @Column(name = "sender_type")
     private SenderType senderType; // 보낸 편지, 받은 편지 구분을 위한 변수
 
+    //====== 편의 메소드 ======//
     // content를 100자까지 자르는 메서드
-    private String truncateContent(String content) {
+    public String truncate100Content(String content) {
         return content.length() > 100 ? content.substring(0, 100) + "..." : content;
     }
 }

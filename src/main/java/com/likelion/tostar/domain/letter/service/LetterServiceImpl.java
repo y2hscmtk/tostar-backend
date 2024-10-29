@@ -1,6 +1,7 @@
 package com.likelion.tostar.domain.letter.service;
 
 import com.likelion.tostar.domain.letter.dto.LetterPostDto;
+import com.likelion.tostar.domain.letter.dto.LetterSearchListDto;
 import com.likelion.tostar.domain.letter.entity.Letter;
 import com.likelion.tostar.domain.letter.repository.LetterRepository;
 import com.likelion.tostar.domain.user.entity.User;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.likelion.tostar.domain.letter.entity.SenderType.PET;
@@ -133,12 +135,21 @@ public class LetterServiceImpl implements LetterService {
         // 해당 회원이 송/수신한 편지 찾기 (최신순)
         List<Letter> letters = letterRepository.findByUserOrderByCreatedAtDesc(user);
 
+        // result 가공
+        List<LetterSearchListDto> result = new ArrayList<>();
         for(Letter letter : letters){
-
+            LetterSearchListDto data = LetterSearchListDto.builder()
+                    .letterId(letter.getId())
+                    .sender(letter.getSenderType())
+                    // content 100자까지 자르기
+                    .content(letter.truncate100Content(letter.getContent()))
+                    .createdAt(letter.localDateTimeToString())
+                    .build();
+            result.add(data);
         }
-        // content 100자까지 자르기
 
         // 200 : 조회 성공
-        return null;
+        return ResponseEntity.status(200)
+                .body(ApiResponse.onSuccess(result));
     }
 }
