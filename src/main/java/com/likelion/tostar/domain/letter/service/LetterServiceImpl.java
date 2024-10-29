@@ -44,7 +44,7 @@ public class LetterServiceImpl implements LetterService {
      */
     @Override
     public ResponseEntity<?> post(Long userId, LetterPostDto letterPostDto) {
-        // 회원 찾기
+        // 404 : 해당 회원이 실제로 존재 하는지 확인
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
@@ -129,7 +129,7 @@ public class LetterServiceImpl implements LetterService {
      */
     @Override
     public ResponseEntity<?> searchList(Long userId, int page, int size) {
-        // 해당 회원이 실제로 존재 하는지 확인
+        // 404 : 해당 회원이 실제로 존재 하는지 확인
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
@@ -161,7 +161,7 @@ public class LetterServiceImpl implements LetterService {
      */
     @Override
     public ResponseEntity<?> searchDetails(Long userId, Long letterId) {
-        // 해당 회원이 실제로 존재 하는지 확인
+        // 404 : 해당 회원이 실제로 존재 하는지 확인
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
