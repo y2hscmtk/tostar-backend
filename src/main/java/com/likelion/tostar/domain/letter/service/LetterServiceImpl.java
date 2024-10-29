@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import static com.likelion.tostar.domain.letter.entity.SenderType.RECEIVER;
+import java.util.List;
+
+import static com.likelion.tostar.domain.letter.entity.SenderType.PET;
 import static com.likelion.tostar.domain.letter.entity.SenderType.SENDER;
 
 @Service
@@ -34,6 +36,9 @@ public class LetterServiceImpl implements LetterService {
     @Value("${openai.model}")
     private String MODEL;
 
+    /**
+     * 편지 전송
+     */
     @Override
     public ResponseEntity<?> post(Long userId, LetterPostDto letterPostDto) {
         // 회원 찾기
@@ -104,7 +109,7 @@ public class LetterServiceImpl implements LetterService {
         letter = Letter.builder()
                 .content(responseLetterContent)
                 .user(user)
-                .senderType(RECEIVER)
+                .senderType(PET)
                 .build();
         letterRepository.save(letter);
 
@@ -120,7 +125,20 @@ public class LetterServiceImpl implements LetterService {
      * 편지 목록 전체 조회
      */
     @Override
-    public ResponseEntity<?> searchList(Long id, int page, int size) {
+    public ResponseEntity<?> searchList(Long userId, int page, int size) {
+        // 회원 찾기
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+
+        // 해당 회원이 송/수신한 편지 찾기 (최신순)
+        List<Letter> letters = letterRepository.findByUserOrderByCreatedAtDesc(user);
+
+        for(Letter letter : letters){
+
+        }
+        // content 100자까지 자르기
+
+        // 200 : 조회 성공
         return null;
     }
 }

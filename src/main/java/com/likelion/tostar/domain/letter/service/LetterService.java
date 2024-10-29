@@ -8,5 +8,5 @@ public interface LetterService {
     ResponseEntity<?> post(Long userId, LetterPostDto letterPostDto);
 
     // 편지 목록 전체 조회
-    ResponseEntity<?> searchList(Long id, int page, int size);
+    ResponseEntity<?> searchList(Long userId, int page, int size);
 }
