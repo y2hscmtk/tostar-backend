@@ -28,6 +28,7 @@ public enum ErrorStatus implements BaseCode {
 
 	// Letter 관련 예외 코드들
 	_LETTER_CONTENT_MISSING(HttpStatus.BAD_REQUEST, "LETTER4001", "편지 내용을 입력해 주세요."),
+	_NOT_OWNER_OF_LETTER(HttpStatus.FORBIDDEN, "LETTER4031", "해당 편지의 주인이 아닙니다."),
 	_LETTER_NOT_FOUND(HttpStatus.NOT_FOUND, "LETTER4041", "해당 편지를 찾을 수 없습니다."),
 	_OPENAI_RESPONSE_NOT_RECEIVED(HttpStatus.BAD_GATEWAY, "LETTER502", "OpenAI 응답이 없습니다."),
 

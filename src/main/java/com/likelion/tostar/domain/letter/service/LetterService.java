@@ -11,5 +11,5 @@ public interface LetterService {
     ResponseEntity<?> searchList(Long userId, int page, int size);
 
     // 편지 상세 조회
-    ResponseEntity searchDetails(Long id, Long letterId);
+    ResponseEntity<?> searchDetails(Long userId, Long letterId);
 }

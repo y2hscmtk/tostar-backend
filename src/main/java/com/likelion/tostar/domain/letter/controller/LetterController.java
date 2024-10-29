@@ -39,7 +39,7 @@ public class LetterController {
      * 편지 상세 조회
      */
     @GetMapping("/{letterId}")
-    public ResponseEntity searchDetail(
+    public ResponseEntity<?> searchDetail(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable("letterId") Long letterId){
         return letterService.searchDetails(customUserDetails.getId(), letterId);
