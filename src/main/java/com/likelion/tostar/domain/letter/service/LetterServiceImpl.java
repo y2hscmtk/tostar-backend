@@ -154,4 +154,14 @@ public class LetterServiceImpl implements LetterService {
         return ResponseEntity.status(200)
                 .body(ApiResponse.onSuccess(result));
     }
+
+    /**
+     * 기본 세팅 완료
+     *
+     */
+    @Override
+    public ResponseEntity searchDetails(Long id, Long letterId) {
+
+        return null;
+    }
 }

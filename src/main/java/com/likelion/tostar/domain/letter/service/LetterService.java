@@ -9,4 +9,7 @@ public interface LetterService {
 
     // 편지 목록 전체 조회
     ResponseEntity<?> searchList(Long userId, int page, int size);
+
+    // 편지 상세 조회
+    ResponseEntity searchDetails(Long id, Long letterId);
 }

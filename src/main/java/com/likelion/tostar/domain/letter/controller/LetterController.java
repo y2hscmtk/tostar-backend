@@ -34,4 +34,14 @@ public class LetterController {
             @RequestParam(value = "size", defaultValue = "4")int size) {
         return letterService.searchList(customUserDetails.getId(), page, size);
     }
+
+    /**
+     * 편지 상세 조회
+     */
+    @GetMapping("/{letterId}")
+    public ResponseEntity searchDetail(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable("letterId") Long letterId){
+        return letterService.searchDetails(customUserDetails.getId(), letterId);
+    }
 }
