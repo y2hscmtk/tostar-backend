@@ -37,7 +37,6 @@ public class UserServiceImpl implements UserService {
     private final S3Service s3Service;
     private final RelationshipRepository relationshipRepository;
 
-
     /**
      * 로그인
      */

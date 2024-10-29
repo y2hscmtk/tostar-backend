@@ -23,4 +23,15 @@ public class LetterController {
             @RequestBody LetterPostDto letterPostDto) {
         return letterService.post(customUserDetails.getId(), letterPostDto);
     }
+
+    /**
+     * 편지 목록 전체 조회
+     */
+    @GetMapping()
+    public ResponseEntity<?> searchList(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam(value = "page", defaultValue = "0")int page,
+            @RequestParam(value = "size", defaultValue = "4")int size) {
+        return letterService.searchList(customUserDetails.getId(), page, size);
+    }
 }

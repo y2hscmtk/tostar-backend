@@ -21,13 +21,16 @@ public class Letter extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // VARCHAR -> TEXT 처리
-    @Lob
-    // 받은 편지에 이모지 작성을 위한 utf8mb4 처리
-    @Column(nullable = false, columnDefinition = "TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "sender_type")
     private SenderType senderType; // 보낸 편지, 받은 편지 구분을 위한 변수
+
+    //====== 편의 메소드 ======//
+    // content를 100자까지 자르는 메서드
+    public String truncate100Content(String content) {
+        return content.length() > 100 ? content.substring(0, 100) + "..." : content;
+    }
 }

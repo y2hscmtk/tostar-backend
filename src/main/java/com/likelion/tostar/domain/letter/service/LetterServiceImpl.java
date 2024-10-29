@@ -1,6 +1,7 @@
 package com.likelion.tostar.domain.letter.service;
 
 import com.likelion.tostar.domain.letter.dto.LetterPostDto;
+import com.likelion.tostar.domain.letter.dto.LetterSearchListDto;
 import com.likelion.tostar.domain.letter.entity.Letter;
 import com.likelion.tostar.domain.letter.repository.LetterRepository;
 import com.likelion.tostar.domain.user.entity.User;
@@ -17,8 +18,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import static com.likelion.tostar.domain.letter.entity.SenderType.RECEIVER;
-import static com.likelion.tostar.domain.letter.entity.SenderType.SENDER;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.likelion.tostar.domain.letter.entity.SenderType.PET;
+import static com.likelion.tostar.domain.letter.entity.SenderType.USER;
 
 @Service
 @Transactional
@@ -34,6 +38,9 @@ public class LetterServiceImpl implements LetterService {
     @Value("${openai.model}")
     private String MODEL;
 
+    /**
+     * 편지 전송
+     */
     @Override
     public ResponseEntity<?> post(Long userId, LetterPostDto letterPostDto) {
         // 회원 찾기
@@ -54,7 +61,7 @@ public class LetterServiceImpl implements LetterService {
         Letter letter = Letter.builder()
                 .content(content)
                 .user(user)
-                .senderType(SENDER)
+                .senderType(USER)
                 .build();
         letterRepository.save(letter);
 
@@ -87,9 +94,6 @@ public class LetterServiceImpl implements LetterService {
                 ownerName, category, content
         );
 
-
-
-
         // 요청 request 객체 생성
         ChatGPTRequest request = new ChatGPTRequest(MODEL, prompt);
 
@@ -107,7 +111,7 @@ public class LetterServiceImpl implements LetterService {
         letter = Letter.builder()
                 .content(responseLetterContent)
                 .user(user)
-                .senderType(RECEIVER)
+                .senderType(PET)
                 .build();
         letterRepository.save(letter);
 
@@ -117,5 +121,37 @@ public class LetterServiceImpl implements LetterService {
         // 200 : 편지 전송 성공
         return ResponseEntity.status(200)
                 .body(ApiResponse.onSuccess(letterPostDto));
+    }
+
+    /**
+     * 편지 목록 전체 조회
+     */
+    @Override
+    public ResponseEntity<?> searchList(Long userId, int page, int size) {
+        // 회원 찾기
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+
+        // 해당 회원이 송/수신한 편지 찾기 (최신순)
+        List<Letter> letters = letterRepository.findByUserOrderByCreatedAtDesc(user);
+
+        // result 가공
+        List<LetterSearchListDto> result = new ArrayList<>();
+        for(Letter letter : letters){
+            System.out.println("letter_SenderType" + letter.getSenderType());
+            LetterSearchListDto data = LetterSearchListDto.builder()
+                    .letterId(letter.getId())
+                    .petName(letter.getUser().getPetName())
+                    .sender(letter.getSenderType())
+                    // content 100자까지 자르기
+                    .content(letter.truncate100Content(letter.getContent()))
+                    .createdAt(letter.localDateTimeToString())
+                    .build();
+            result.add(data);
+        }
+
+        // 200 : 조회 성공
+        return ResponseEntity.status(200)
+                .body(ApiResponse.onSuccess(result));
     }
 }
