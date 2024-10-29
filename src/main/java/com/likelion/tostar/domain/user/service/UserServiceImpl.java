@@ -36,7 +36,6 @@ public class UserServiceImpl implements UserService {
     private final UserConverter userConverter;
     private final S3Service s3Service;
     private final RelationshipRepository relationshipRepository;
-
     /**
      * 로그인
      */
@@ -127,7 +126,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ResponseEntity<?> searchUser(Long userId, String petName, int page, int size) {
-        // 해당 회원이 실제로 존재 하는지 확인
+        // 404 : 해당 회원이 실제로 존재 하는지 확인
         User foundUser = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
@@ -169,7 +168,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ResponseEntity<?> addFriend(String email, AddFriendDto addFriendDto) {
-        // 해당 회원이 실제로 존재 하는지 확인
+        // 404 : 해당 회원이 실제로 존재 하는지 확인
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
