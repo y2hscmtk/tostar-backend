@@ -23,8 +23,7 @@ public class Letter extends BaseEntity {
 
     // VARCHAR -> TEXT 처리
     @Lob
-    // 받은 편지에 이모지 작성을 위한 utf8mb4 처리
-    @Column(nullable = false, columnDefinition = "TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+    @Column(nullable = false)
     private String content;
 
     @Enumerated(EnumType.STRING)
