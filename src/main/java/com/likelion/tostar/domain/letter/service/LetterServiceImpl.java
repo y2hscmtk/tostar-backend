@@ -1,6 +1,7 @@
 package com.likelion.tostar.domain.letter.service;
 
 import com.likelion.tostar.domain.letter.dto.LetterPostDto;
+import com.likelion.tostar.domain.letter.dto.LetterSearchDetailDto;
 import com.likelion.tostar.domain.letter.dto.LetterSearchListDto;
 import com.likelion.tostar.domain.letter.entity.Letter;
 import com.likelion.tostar.domain.letter.repository.LetterRepository;
@@ -128,7 +129,7 @@ public class LetterServiceImpl implements LetterService {
      */
     @Override
     public ResponseEntity<?> searchList(Long userId, int page, int size) {
-        // 회원 찾기
+        // 해당 회원이 실제로 존재 하는지 확인
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
@@ -151,6 +152,36 @@ public class LetterServiceImpl implements LetterService {
         }
 
         // 200 : 조회 성공
+        return ResponseEntity.status(200)
+                .body(ApiResponse.onSuccess(result));
+    }
+
+    /**
+     * 편지 상세 조회
+     */
+    @Override
+    public ResponseEntity<?> searchDetails(Long userId, Long letterId) {
+        // 해당 회원이 실제로 존재 하는지 확인
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+
+        // 404 : 해당 편지가 없는 경우
+        Letter letter = letterRepository.findById(letterId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._LETTER_NOT_FOUND));
+
+        // 403 : 편지가 해당 회원의 편지가 아닌 경우
+        if (letter.getUser().equals(user)) {
+            return ResponseEntity.status(403)
+                    .body(ApiResponse.onFailure(ErrorStatus._NOT_OWNER_OF_LETTER, null));
+        }
+
+        // result 가공
+        LetterSearchDetailDto result = LetterSearchDetailDto.builder()
+                .sender(letter.getSenderType())
+                .content(letter.getContent())
+                .build();
+
+        // 200 : 편지 조회 성공
         return ResponseEntity.status(200)
                 .body(ApiResponse.onSuccess(result));
     }
