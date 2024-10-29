@@ -87,9 +87,6 @@ public class LetterServiceImpl implements LetterService {
                 ownerName, category, content
         );
 
-
-
-
         // 요청 request 객체 생성
         ChatGPTRequest request = new ChatGPTRequest(MODEL, prompt);
 
@@ -117,5 +114,13 @@ public class LetterServiceImpl implements LetterService {
         // 200 : 편지 전송 성공
         return ResponseEntity.status(200)
                 .body(ApiResponse.onSuccess(letterPostDto));
+    }
+
+    /**
+     * 편지 목록 전체 조회
+     */
+    @Override
+    public ResponseEntity<?> searchList(Long id, int page, int size) {
+        return null;
     }
 }
