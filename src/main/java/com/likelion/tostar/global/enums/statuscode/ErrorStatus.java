@@ -26,6 +26,11 @@ public enum ErrorStatus implements BaseCode {
 	_MEMBER_ALREADY_JOINED(HttpStatus.FORBIDDEN, "MEMBER4001", "이미 커뮤니티에 존재하는 회원입니다."),
 	_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER4002", "이미 탈퇴되었거나 커뮤니티에 존재하지 않는 회원입니다."),
 
+	// Letter 관련 예외 코드들
+	_LETTER_CONTENT_MISSING(HttpStatus.BAD_REQUEST, "LETTER4001", "편지 내용을 입력해 주세요."),
+	_LETTER_NOT_FOUND(HttpStatus.NOT_FOUND, "LETTER4041", "해당 편지를 찾을 수 없습니다."),
+	_OPENAI_RESPONSE_NOT_RECEIVED(HttpStatus.BAD_GATEWAY, "LETTER502", "OpenAI 응답이 없습니다."),
+
 	// S3 Error
 	_S3_UPLOAD_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "S35001", "S3에 파일 업로드 중 오류가 발생했습니다."),
 	_S3_CLIENT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "S35002", "S3 클라이언트 오류가 발생했습니다."),
