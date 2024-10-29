@@ -21,9 +21,7 @@ public class Letter extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // VARCHAR -> TEXT 처리
-    @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
     @Enumerated(EnumType.STRING)

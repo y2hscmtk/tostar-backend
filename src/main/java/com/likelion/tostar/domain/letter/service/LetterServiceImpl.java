@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.likelion.tostar.domain.letter.entity.SenderType.PET;
-import static com.likelion.tostar.domain.letter.entity.SenderType.SENDER;
+import static com.likelion.tostar.domain.letter.entity.SenderType.USER;
 
 @Service
 @Transactional
@@ -61,7 +61,7 @@ public class LetterServiceImpl implements LetterService {
         Letter letter = Letter.builder()
                 .content(content)
                 .user(user)
-                .senderType(SENDER)
+                .senderType(USER)
                 .build();
         letterRepository.save(letter);
 
@@ -138,6 +138,7 @@ public class LetterServiceImpl implements LetterService {
         // result 가공
         List<LetterSearchListDto> result = new ArrayList<>();
         for(Letter letter : letters){
+            System.out.println("letter_SenderType" + letter.getSenderType());
             LetterSearchListDto data = LetterSearchListDto.builder()
                     .letterId(letter.getId())
                     .sender(letter.getSenderType())
