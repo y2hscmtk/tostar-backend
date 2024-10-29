@@ -141,6 +141,7 @@ public class LetterServiceImpl implements LetterService {
             System.out.println("letter_SenderType" + letter.getSenderType());
             LetterSearchListDto data = LetterSearchListDto.builder()
                     .letterId(letter.getId())
+                    .petName(letter.getUser().getPetName())
                     .sender(letter.getSenderType())
                     // content 100자까지 자르기
                     .content(letter.truncate100Content(letter.getContent()))

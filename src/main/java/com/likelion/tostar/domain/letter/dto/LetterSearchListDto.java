@@ -10,6 +10,7 @@ import lombok.Data;
 @Builder
 public class LetterSearchListDto {
     private Long letterId;
+    private String petName;
     private SenderType sender;
     private String content;
     private String createdAt;
