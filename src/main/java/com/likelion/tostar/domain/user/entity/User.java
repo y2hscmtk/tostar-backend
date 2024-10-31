@@ -1,7 +1,7 @@
 package com.likelion.tostar.domain.user.entity;
 
 import com.likelion.tostar.domain.community.entity.Community;
-import com.likelion.tostar.domain.community.entity.Member;
+import com.likelion.tostar.domain.community.entity.mapping.Member;
 import com.likelion.tostar.domain.user.dto.UserInfoDTO;
 import jakarta.persistence.*;
 import java.util.ArrayList;

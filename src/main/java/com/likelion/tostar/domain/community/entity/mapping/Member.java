@@ -1,5 +1,6 @@
-package com.likelion.tostar.domain.community.entity;
+package com.likelion.tostar.domain.community.entity.mapping;
 
+import com.likelion.tostar.domain.community.entity.Community;
 import com.likelion.tostar.domain.user.entity.User;
 import com.likelion.tostar.global.entity.BaseEntity;
 import jakarta.persistence.Column;

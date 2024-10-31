@@ -3,7 +3,7 @@ package com.likelion.tostar.domain.community.service;
 import com.likelion.tostar.domain.community.converter.CommunityConverter;
 import com.likelion.tostar.domain.community.dto.CommunityFormDTO;
 import com.likelion.tostar.domain.community.entity.Community;
-import com.likelion.tostar.domain.community.entity.Member;
+import com.likelion.tostar.domain.community.entity.mapping.Member;
 import com.likelion.tostar.domain.community.repository.CommunityRepository;
 import com.likelion.tostar.domain.community.repository.MemberRepository;
 import com.likelion.tostar.domain.user.entity.User;
@@ -16,7 +16,6 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,6 +1,8 @@
 package com.likelion.tostar.domain.community.entity;
 
+import com.likelion.tostar.domain.chat.entity.CommunityChat;
 import com.likelion.tostar.domain.community.dto.CommunityFormDTO;
+import com.likelion.tostar.domain.community.entity.mapping.Member;
 import com.likelion.tostar.domain.user.entity.User;
 import com.likelion.tostar.global.entity.BaseEntity;
 import jakarta.persistence.CascadeType;
