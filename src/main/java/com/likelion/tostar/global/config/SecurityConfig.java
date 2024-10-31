@@ -5,8 +5,6 @@ import com.likelion.tostar.global.jwt.handler.CustomAccessDeniedHandler;
 import com.likelion.tostar.global.jwt.handler.CustomAuthenticationEntryPoint;
 import com.likelion.tostar.global.jwt.service.CustomUserDetailsService;
 import com.likelion.tostar.global.jwt.util.JwtUtil;
-import jakarta.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -75,7 +72,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // login, root, join 경로의 요청에 대해서는 모두 허용
                         .requestMatchers("api/user/login", "api/user/join").permitAll()
-                        .requestMatchers("/test").hasRole("ADMIN")
+                        .requestMatchers("/ws/chat").permitAll()
                         // 이외의 요청에 대해서는 인증된 사용자만 허용
                         .anyRequest().authenticated()
                 );
