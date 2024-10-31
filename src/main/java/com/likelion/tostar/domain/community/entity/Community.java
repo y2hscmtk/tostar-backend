@@ -42,6 +42,10 @@ public class Community extends BaseEntity {
     @OneToMany(mappedBy = "community", cascade = CascadeType.ALL)
     private List<Member> communityMembers = new ArrayList<>();
 
+    // 커뮤니티에서 주고받은 채팅 내역
+    @Builder.Default
+    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL)
+    private List<CommunityChat> communityChats = new ArrayList<>();
 
     // ==== 편의 메소드 ==== //
     public void addMember(User user) {
