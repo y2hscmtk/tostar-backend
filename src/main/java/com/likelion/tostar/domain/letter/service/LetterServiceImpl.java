@@ -1,6 +1,7 @@
 package com.likelion.tostar.domain.letter.service;
 
-import com.likelion.tostar.domain.letter.dto.LetterPostDto;
+import com.likelion.tostar.domain.letter.dto.LetterPostRequestDto;
+import com.likelion.tostar.domain.letter.dto.LetterPostResponseDto;
 import com.likelion.tostar.domain.letter.dto.LetterSearchDetailDto;
 import com.likelion.tostar.domain.letter.dto.LetterSearchListDto;
 import com.likelion.tostar.domain.letter.entity.Letter;
@@ -42,15 +43,16 @@ public class LetterServiceImpl implements LetterService {
     /**
      * 편지 전송
      */
+    @Transactional
     @Override
-    public ResponseEntity<?> post(Long userId, LetterPostDto letterPostDto) {
+    public ResponseEntity<?> post(Long userId, LetterPostRequestDto letterPostRequestDto) {
         // 404 : 해당 회원이 실제로 존재 하는지 확인
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
         String ownerName = user.getOwnerName();
         String category = user.getCategory();
-        String content = letterPostDto.getContent();
+        String content = letterPostRequestDto.getContent();
 
         // 400 : 편지 내용 없음
         if (content.isBlank()) {
@@ -59,12 +61,12 @@ public class LetterServiceImpl implements LetterService {
         }
 
         // 보낸 편지 save
-        Letter letter = Letter.builder()
+        Letter sentLetter = Letter.builder()
                 .content(content)
                 .user(user)
                 .senderType(USER)
                 .build();
-        letterRepository.save(letter);
+        letterRepository.save(sentLetter);
 
         // 프롬프트 설정
         String prompt = String.format(
@@ -133,19 +135,21 @@ public class LetterServiceImpl implements LetterService {
         String responseLetterContent = response.getChoices().get(0).getMessage().getContent();
 
         // 받은 편지 save
-        letter = Letter.builder()
+        Letter receivedLetter = Letter.builder()
                 .content(responseLetterContent)
                 .user(user)
                 .senderType(PET)
                 .build();
-        letterRepository.save(letter);
+        letterRepository.save(receivedLetter);
 
-        // dto 가공
-        letterPostDto.setContent(responseLetterContent);
+        // result
+        LetterPostResponseDto result = LetterPostResponseDto.builder()
+                .receivedLetter(receivedLetter.getId())
+                .build();
 
         // 200 : 편지 전송 성공
         return ResponseEntity.status(200)
-                .body(ApiResponse.onSuccess(letterPostDto));
+                .body(ApiResponse.onSuccess(result));
     }
 
     /**

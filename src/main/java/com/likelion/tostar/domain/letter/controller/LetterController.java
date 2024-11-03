@@ -1,6 +1,6 @@
 package com.likelion.tostar.domain.letter.controller;
 
-import com.likelion.tostar.domain.letter.dto.LetterPostDto;
+import com.likelion.tostar.domain.letter.dto.LetterPostRequestDto;
 import com.likelion.tostar.domain.letter.service.LetterService;
 import com.likelion.tostar.global.jwt.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +20,8 @@ public class LetterController {
     @PostMapping()
     public ResponseEntity<?> post(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestBody LetterPostDto letterPostDto) {
-        return letterService.post(customUserDetails.getId(), letterPostDto);
+            @RequestBody LetterPostRequestDto letterPostRequestDto) {
+        return letterService.post(customUserDetails.getId(), letterPostRequestDto);
     }
 
     /**
