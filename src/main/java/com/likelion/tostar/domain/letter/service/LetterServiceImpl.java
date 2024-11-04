@@ -198,7 +198,7 @@ public class LetterServiceImpl implements LetterService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus._LETTER_NOT_FOUND));
 
         // 403 : 편지가 해당 회원의 편지가 아닌 경우
-        if (letter.getUser().equals(user)) {
+        if (!letter.getUser().equals(user)) {
             return ResponseEntity.status(403)
                     .body(ApiResponse.onFailure(ErrorStatus._NOT_OWNER_OF_LETTER, null));
         }
