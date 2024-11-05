@@ -7,4 +7,5 @@ import com.likelion.tostar.domain.chat.entity.ChatMessageRequestDTO;
  */
 public interface CommunityChatCommandService {
     void sendMessage(ChatMessageRequestDTO messageDTO, String email);
+    void enterChatRoom(Long chatRoomId, String email);
 }

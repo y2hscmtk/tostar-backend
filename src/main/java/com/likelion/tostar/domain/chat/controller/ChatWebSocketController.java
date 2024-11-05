@@ -25,5 +25,11 @@ public class ChatWebSocketController {
         String email = jwtUtil.getEmailFromJWT(headerAccessor.getFirstNativeHeader("Authorization"));
         communityChatCommandService.sendMessage(messageDTO, email);
     }
+
+    @MessageMapping("/chat.enter")
+    public void enterChatRoom(@Payload ChatMessageRequestDTO messageDTO, SimpMessageHeaderAccessor headerAccessor) {
+        String email = jwtUtil.getEmailFromJWT(headerAccessor.getFirstNativeHeader("Authorization"));
+        communityChatCommandService.enterChatRoom(messageDTO.getChatRoomId(), email);
+    }
 }
 
