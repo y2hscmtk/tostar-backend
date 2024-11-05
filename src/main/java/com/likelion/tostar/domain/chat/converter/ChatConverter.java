@@ -1,6 +1,7 @@
 package com.likelion.tostar.domain.chat.converter;
 
 import com.likelion.tostar.domain.chat.dto.CommunityChatResponseDTO;
+import com.likelion.tostar.domain.chat.entity.CommunityChat;
 import com.likelion.tostar.domain.chat.entity.enums.MessageType;
 import com.likelion.tostar.domain.user.entity.User;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,16 @@ public class ChatConverter {
                 .messageType(messageType)
                 .email(sender.getEmail())
                 .content(message)
+                .build();
+    }
+
+    public CommunityChatResponseDTO toCommunityChatResponseDTO(CommunityChat communityChat) {
+        User sender = communityChat.getSender();
+        return CommunityChatResponseDTO.builder()
+                .profileImage(sender.getProfileImage())
+                .messageType(communityChat.getType())
+                .email(sender.getEmail())
+                .content(communityChat.getContent())
                 .build();
     }
 }
