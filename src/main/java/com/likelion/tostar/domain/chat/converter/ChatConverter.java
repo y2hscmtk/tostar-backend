@@ -1,6 +1,6 @@
 package com.likelion.tostar.domain.chat.converter;
 
-import com.likelion.tostar.domain.chat.entity.ChatMessageResponseDTO;
+import com.likelion.tostar.domain.chat.dto.ChatMessageResponseDTO;
 import com.likelion.tostar.domain.chat.entity.enums.MessageType;
 import com.likelion.tostar.domain.user.entity.User;
 import org.springframework.context.annotation.Configuration;

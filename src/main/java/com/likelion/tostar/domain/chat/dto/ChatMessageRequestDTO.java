@@ -1,4 +1,4 @@
-package com.likelion.tostar.domain.chat.entity;
+package com.likelion.tostar.domain.chat.dto;
 
 import lombok.Builder;
 import lombok.Data;

@@ -1,7 +1,7 @@
 package com.likelion.tostar.domain.community.service;
 
 import com.likelion.tostar.domain.chat.converter.ChatConverter;
-import com.likelion.tostar.domain.chat.entity.ChatMessageResponseDTO;
+import com.likelion.tostar.domain.chat.dto.ChatMessageResponseDTO;
 import com.likelion.tostar.domain.chat.entity.CommunityChat;
 import com.likelion.tostar.domain.chat.entity.enums.MessageType;
 import com.likelion.tostar.domain.chat.repository.CommunityChatRepository;

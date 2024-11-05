@@ -1,6 +1,6 @@
 package com.likelion.tostar.domain.chat.controller;
 
-import com.likelion.tostar.domain.chat.entity.ChatMessageRequestDTO;
+import com.likelion.tostar.domain.chat.dto.ChatMessageRequestDTO;
 import com.likelion.tostar.domain.chat.service.CommunityChatCommandService;
 import com.likelion.tostar.global.jwt.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
