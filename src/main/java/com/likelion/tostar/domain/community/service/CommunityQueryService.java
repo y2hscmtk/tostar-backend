@@ -17,7 +17,5 @@ public interface CommunityQueryService {
 
     ResponseEntity<?> getCommunityPreview(Long communityId);
 
-    void removeMemberFromCommunity(Community community, User user);
-
-    boolean addMemberToCommunity(Community community, User user);
+    ResponseEntity<?> membershipCheck(Long communityId, String email);
 }

@@ -1,7 +1,6 @@
-package com.choi76.web_socket_jwt.global.socket.interceptor;
+package com.likelion.tostar.global.socket.interceptor;
 
-import com.choi76.web_socket_jwt.global.jwt.util.JwtUtil;
-import java.security.Principal;
+import com.likelion.tostar.global.jwt.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;

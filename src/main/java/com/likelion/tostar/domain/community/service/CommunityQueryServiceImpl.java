@@ -92,29 +92,15 @@ public class CommunityQueryServiceImpl implements CommunityQueryService{
     }
 
     /**
-     * 커뮤니티 회원 추가
+     * 회원 여부 반환
      */
     @Override
-    public boolean addMemberToCommunity(Community community, User user) {
-        // 커뮤니티 회원 여부 파악
+    public ResponseEntity<?> membershipCheck(Long communityId, String email) {
+        User user = findUserByEmail(email);
+        Community community = findCommunityById(communityId);
         Optional<Member> membership = memberRepository.findMembership(community, user);
-        if (membership.isPresent()) { // 이미 회원이라면 - 입장이 아님
-            return false;
-        }
-        // 회원이 아니라면 커뮤니티에 회원가입
-        community.addMember(user);
-        return true;
-    }
-
-    /**
-     * 커뮤니티 회원 제거
-     */
-    @Override
-    public void removeMemberFromCommunity(Community community, User user) {
-        Member member = findMemberShip(community, user);
-        // 회원 제거
-        community.deleteMember(member);
-        memberRepository.delete(member);
+        // 회원 여부 반환
+        return ResponseEntity.ok(ApiResponse.onSuccess(membership.isPresent()));
     }
 
     /**

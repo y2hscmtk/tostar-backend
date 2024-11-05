@@ -1,4 +1,4 @@
-package com.likelion.tostar.global.socket;
+package com.likelion.tostar.global.socket.handler;
 
 import java.util.HashSet;
 import java.util.Set;
