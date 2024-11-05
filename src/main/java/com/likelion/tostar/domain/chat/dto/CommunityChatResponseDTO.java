@@ -12,5 +12,6 @@ import lombok.Data;
 public class CommunityChatResponseDTO {
     private String email; // 송신자 정보
     private MessageType messageType;
+    private String profileImage;
     private String content;
 }

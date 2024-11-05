@@ -13,6 +13,7 @@ public class ChatConverter {
     public CommunityChatResponseDTO toCommunityChatResponseDTO(
             String message, MessageType messageType, User sender) {
         return CommunityChatResponseDTO.builder()
+                .profileImage(sender.getProfileImage())
                 .messageType(messageType)
                 .email(sender.getEmail())
                 .content(message)
