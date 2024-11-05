@@ -1,8 +1,6 @@
 package com.likelion.tostar.domain.chat.dto;
 
 import com.likelion.tostar.domain.chat.entity.enums.MessageType;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,7 +9,7 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class ChatMessageResponseDTO {
+public class CommunityChatResponseDTO {
     private String email; // 송신자 정보
     private MessageType messageType;
     private String content;

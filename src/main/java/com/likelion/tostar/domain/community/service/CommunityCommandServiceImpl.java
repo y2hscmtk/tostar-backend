@@ -1,7 +1,7 @@
 package com.likelion.tostar.domain.community.service;
 
 import com.likelion.tostar.domain.chat.converter.ChatConverter;
-import com.likelion.tostar.domain.chat.dto.ChatMessageResponseDTO;
+import com.likelion.tostar.domain.chat.dto.CommunityChatResponseDTO;
 import com.likelion.tostar.domain.chat.entity.CommunityChat;
 import com.likelion.tostar.domain.chat.entity.enums.MessageType;
 import com.likelion.tostar.domain.chat.repository.CommunityChatRepository;
@@ -127,8 +127,8 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
         communityChatRepository.save(communityChat);
 
         // 채팅방 반환용 DTO
-        ChatMessageResponseDTO responseMessage =
-                chatConverter.toChatMessageResponseDTO(content, MessageType.ANNOUNCE, user);
+        CommunityChatResponseDTO responseMessage =
+                chatConverter.toCommunityChatResponseDTO(content, MessageType.ANNOUNCE, user);
         messagingTemplate.convertAndSend("/topic/chatroom/" + communityId, responseMessage);
 
         return ResponseEntity.ok(ApiResponse.onSuccess("커뮤니티 가입에 성공하였습니다."));
@@ -159,8 +159,8 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
         communityChatRepository.save(communityChat);
 
         // 채팅방 반환용 DTO
-        ChatMessageResponseDTO responseMessage =
-                chatConverter.toChatMessageResponseDTO(content, MessageType.ANNOUNCE, user);
+        CommunityChatResponseDTO responseMessage =
+                chatConverter.toCommunityChatResponseDTO(content, MessageType.ANNOUNCE, user);
         messagingTemplate.convertAndSend("/topic/chatroom/" + communityId, responseMessage);
         return ResponseEntity.ok(ApiResponse.onSuccess("커뮤니티 탈퇴에 성공하였습니다."));
     }

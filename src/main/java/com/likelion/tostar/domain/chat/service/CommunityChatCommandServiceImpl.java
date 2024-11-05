@@ -1,8 +1,8 @@
 package com.likelion.tostar.domain.chat.service;
 
 import com.likelion.tostar.domain.chat.converter.ChatConverter;
-import com.likelion.tostar.domain.chat.dto.ChatMessageRequestDTO;
-import com.likelion.tostar.domain.chat.dto.ChatMessageResponseDTO;
+import com.likelion.tostar.domain.chat.dto.CommunityChatRequestDTO;
+import com.likelion.tostar.domain.chat.dto.CommunityChatResponseDTO;
 import com.likelion.tostar.domain.chat.entity.CommunityChat;
 import com.likelion.tostar.domain.chat.entity.enums.MessageType;
 import com.likelion.tostar.domain.chat.repository.CommunityChatRepository;
@@ -35,7 +35,7 @@ public class CommunityChatCommandServiceImpl implements CommunityChatCommandServ
      * 채팅 전송
      */
     @Override
-    public void sendMessage(ChatMessageRequestDTO messageDTO, String email) {
+    public void sendMessage(CommunityChatRequestDTO messageDTO, String email) {
         Community community = findCommunityById(messageDTO.getChatRoomId());
         User sender = findUserByEmail(email);
         // 채팅 생성 및 저장
@@ -43,8 +43,8 @@ public class CommunityChatCommandServiceImpl implements CommunityChatCommandServ
                 community, sender);
         communityChatRepository.save(communityChat);
         // 반환용 메시지 생성
-        ChatMessageResponseDTO responseDto =
-                chatConverter.toChatMessageResponseDTO(messageDTO.getContent(), MessageType.TALK, sender);
+        CommunityChatResponseDTO responseDto =
+                chatConverter.toCommunityChatResponseDTO(messageDTO.getContent(), MessageType.TALK, sender);
         // topic/chatroom/{chatRoomId} 를 구독한 Client 들에게 새로운 데이터 전송
         messagingTemplate.convertAndSend("/topic/chatroom/" + messageDTO.getChatRoomId(), responseDto);
     }
@@ -73,8 +73,8 @@ public class CommunityChatCommandServiceImpl implements CommunityChatCommandServ
                 CommunityChat.toCommunityChat(content, MessageType.ANNOUNCE, community, user);
         communityChatRepository.save(communityChat);
         // 채팅방 반환용 DTO
-        ChatMessageResponseDTO responseMessage =
-                chatConverter.toChatMessageResponseDTO(content, MessageType.ANNOUNCE, user);
+        CommunityChatResponseDTO responseMessage =
+                chatConverter.toCommunityChatResponseDTO(content, MessageType.ANNOUNCE, user);
 
         messagingTemplate.convertAndSend("/topic/chatroom/" + chatRoomId, responseMessage);
     }
