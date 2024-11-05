@@ -9,9 +9,4 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CommunityChatQueryServiceImpl implements CommunityChatQueryService{
     private final CommunityChatRepository communityChatRepository;
-
-    @Override
-    public void saveChatMessage(CommunityChat chat) {
-        communityChatRepository.save(chat);
-    }
 }
