@@ -134,6 +134,9 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
         return ResponseEntity.ok(ApiResponse.onSuccess("커뮤니티 가입에 성공하였습니다."));
     }
 
+    /**
+     * 커뮤니티 탈퇴(떠나기)
+     */
     @Override
     public ResponseEntity<?> leaveCommunity(Long communityId, String email) {
         // 1. 회원 정보 조회
@@ -143,11 +146,22 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
         // 3. 커뮤니티 멤버 정보 조회
         Member member = memberRepository.findMembership(community, user)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._MEMBER_NOT_FOUND));
-
         // 4. 커뮤니티 탈퇴
         community.deleteMember(member);
         memberRepository.delete(member);
 
+        // 5. 채팅방 퇴장 메시지 저장 및 반환
+        String content = user.getPetName() + "가 " + community.getTitle() + "을 떠났어요.";
+
+        // 채팅방 저장용
+        CommunityChat communityChat =
+                CommunityChat.toCommunityChat(content, MessageType.ANNOUNCE, community, user);
+        communityChatRepository.save(communityChat);
+
+        // 채팅방 반환용 DTO
+        ChatMessageResponseDTO responseMessage =
+                chatConverter.toChatMessageResponseDTO(content, MessageType.ANNOUNCE, user);
+        messagingTemplate.convertAndSend("/topic/chatroom/" + communityId, responseMessage);
         return ResponseEntity.ok(ApiResponse.onSuccess("커뮤니티 탈퇴에 성공하였습니다."));
     }
 
