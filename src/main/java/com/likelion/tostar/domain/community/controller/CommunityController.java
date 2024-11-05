@@ -28,6 +28,15 @@ public class CommunityController {
     private final CommunityCommandService communityCommandService;
 
     /**
+     * 커뮤니티 회원 여부 반환
+     */
+    @GetMapping("{communityId}/membership-check")
+    public ResponseEntity<?> membershipCheck(@PathVariable("communityId") Long communityId,
+                                             @AuthenticationPrincipal CustomUserDetails userDetails) {
+        return communityQueryService.membershipCheck(communityId,userDetails.getEmail());
+    }
+
+    /**
      * 커뮤니티 미리보기(랜덤)
      * 메인화면에서 사용; 3개의 랜덤 미리보기 반환
      */

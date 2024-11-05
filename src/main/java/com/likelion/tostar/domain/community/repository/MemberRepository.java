@@ -1,7 +1,7 @@
 package com.likelion.tostar.domain.community.repository;
 
 import com.likelion.tostar.domain.community.entity.Community;
-import com.likelion.tostar.domain.community.entity.Member;
+import com.likelion.tostar.domain.community.entity.mapping.Member;
 import com.likelion.tostar.domain.user.entity.User;
 import java.util.Optional;
 import org.springframework.data.domain.Page;

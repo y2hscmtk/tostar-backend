@@ -1,5 +1,7 @@
 package com.likelion.tostar.domain.community.service;
 
+import com.likelion.tostar.domain.community.entity.Community;
+import com.likelion.tostar.domain.user.entity.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
@@ -14,4 +16,6 @@ public interface CommunityQueryService {
     ResponseEntity<?> getMyCommunities(Pageable pageable, String email);
 
     ResponseEntity<?> getCommunityPreview(Long communityId);
+
+    ResponseEntity<?> membershipCheck(Long communityId, String email);
 }

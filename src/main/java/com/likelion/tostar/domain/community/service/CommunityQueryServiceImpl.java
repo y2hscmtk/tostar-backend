@@ -4,6 +4,7 @@ import com.likelion.tostar.domain.community.converter.CommunityConverter;
 import com.likelion.tostar.domain.community.dto.CommunityPreviewResponseDTO;
 import com.likelion.tostar.domain.community.dto.CommunityProfileResponseDTO;
 import com.likelion.tostar.domain.community.entity.Community;
+import com.likelion.tostar.domain.community.entity.mapping.Member;
 import com.likelion.tostar.domain.community.repository.CommunityRepository;
 import com.likelion.tostar.domain.community.repository.MemberRepository;
 import com.likelion.tostar.domain.user.entity.User;
@@ -13,6 +14,7 @@ import com.likelion.tostar.global.exception.GeneralException;
 import com.likelion.tostar.global.response.ApiResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -90,6 +92,18 @@ public class CommunityQueryServiceImpl implements CommunityQueryService{
     }
 
     /**
+     * 회원 여부 반환
+     */
+    @Override
+    public ResponseEntity<?> membershipCheck(Long communityId, String email) {
+        User user = findUserByEmail(email);
+        Community community = findCommunityById(communityId);
+        Optional<Member> membership = memberRepository.findMembership(community, user);
+        // 회원 여부 반환
+        return ResponseEntity.ok(ApiResponse.onSuccess(membership.isPresent()));
+    }
+
+    /**
      * 정렬 기준 : 최신 작성(생성) 순
      */
     public Pageable getDefaultPageable(Pageable pageable) {
@@ -108,5 +122,10 @@ public class CommunityQueryServiceImpl implements CommunityQueryService{
     private Community findCommunityById(Long communityId) {
         return communityRepository.findById(communityId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._COMMUNITY_NOT_FOUND));
+    }
+
+    private Member findMemberShip(Community community, User user) {
+        return memberRepository.findMembership(community, user)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._MEMBER_NOT_FOUND));
     }
 }

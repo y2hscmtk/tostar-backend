@@ -28,6 +28,19 @@ public class JwtUtil {
         this.tokenExpTime = tokenExpTime;
     }
 
+    public String getEmailFromJWT(String token) {
+        if (token != null && token.startsWith("Bearer ")) {
+            String jwt = token.substring(7);
+            if (!isExpired(jwt)) {
+                return getEmail(jwt);
+            } else {
+                throw new RuntimeException("토큰이 만료되었습니다.");
+            }
+        } else {
+            throw new RuntimeException("유효하지 않은 토큰입니다.");
+        }
+    }
+
     public Claims getAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(secretKey) // 시크릿 키를 사용하여 복호화한다.

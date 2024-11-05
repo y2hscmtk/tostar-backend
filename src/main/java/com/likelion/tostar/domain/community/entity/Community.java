@@ -1,6 +1,8 @@
 package com.likelion.tostar.domain.community.entity;
 
+import com.likelion.tostar.domain.chat.entity.CommunityChat;
 import com.likelion.tostar.domain.community.dto.CommunityFormDTO;
+import com.likelion.tostar.domain.community.entity.mapping.Member;
 import com.likelion.tostar.domain.user.entity.User;
 import com.likelion.tostar.global.entity.BaseEntity;
 import jakarta.persistence.CascadeType;
@@ -42,6 +44,10 @@ public class Community extends BaseEntity {
     @OneToMany(mappedBy = "community", cascade = CascadeType.ALL)
     private List<Member> communityMembers = new ArrayList<>();
 
+    // 커뮤니티에서 주고받은 채팅 내역
+    @Builder.Default
+    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL)
+    private List<CommunityChat> communityChats = new ArrayList<>();
 
     // ==== 편의 메소드 ==== //
     public void addMember(User user) {

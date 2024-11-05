@@ -1,9 +1,14 @@
 package com.likelion.tostar.domain.community.service;
 
+import com.likelion.tostar.domain.chat.converter.ChatConverter;
+import com.likelion.tostar.domain.chat.dto.CommunityChatResponseDTO;
+import com.likelion.tostar.domain.chat.entity.CommunityChat;
+import com.likelion.tostar.domain.chat.entity.enums.MessageType;
+import com.likelion.tostar.domain.chat.repository.CommunityChatRepository;
 import com.likelion.tostar.domain.community.converter.CommunityConverter;
 import com.likelion.tostar.domain.community.dto.CommunityFormDTO;
 import com.likelion.tostar.domain.community.entity.Community;
-import com.likelion.tostar.domain.community.entity.Member;
+import com.likelion.tostar.domain.community.entity.mapping.Member;
 import com.likelion.tostar.domain.community.repository.CommunityRepository;
 import com.likelion.tostar.domain.community.repository.MemberRepository;
 import com.likelion.tostar.domain.user.entity.User;
@@ -15,8 +20,8 @@ import com.likelion.tostar.global.s3.service.S3Service;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,9 +31,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class CommunityCommandServiceImpl implements CommunityCommandService {
     private final UserRepository userRepository;
     private final CommunityRepository communityRepository;
+    private final CommunityChatRepository communityChatRepository;
     private final MemberRepository memberRepository;
     private final CommunityConverter communityConverter;
+    private final ChatConverter chatConverter;
     private final S3Service s3Service;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Override
     public ResponseEntity<?> createCommunity(
@@ -109,9 +117,26 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
         }
         // 4. 커뮤니티 가입
         community.addMember(user); // CASCADE에 의해 member 객체 저장됨
+
+        // 5. 채팅방 반환용 메시지 생성 & 채팅방 구독자(클라이언트)에 입장 메시지 전송
+        String content = user.getPetName() + "가 " + community.getTitle() + "에 찾아왔어요";
+
+        // 채팅방 저장용
+        CommunityChat communityChat =
+                CommunityChat.toCommunityChat(content, MessageType.ANNOUNCE, community, user);
+        communityChatRepository.save(communityChat);
+
+        // 채팅방 반환용 DTO
+        CommunityChatResponseDTO responseMessage =
+                chatConverter.toCommunityChatResponseDTO(content, MessageType.ANNOUNCE, user);
+        messagingTemplate.convertAndSend("/topic/chatroom/" + communityId, responseMessage);
+
         return ResponseEntity.ok(ApiResponse.onSuccess("커뮤니티 가입에 성공하였습니다."));
     }
 
+    /**
+     * 커뮤니티 탈퇴(떠나기)
+     */
     @Override
     public ResponseEntity<?> leaveCommunity(Long communityId, String email) {
         // 1. 회원 정보 조회
@@ -121,11 +146,22 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
         // 3. 커뮤니티 멤버 정보 조회
         Member member = memberRepository.findMembership(community, user)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._MEMBER_NOT_FOUND));
-
         // 4. 커뮤니티 탈퇴
         community.deleteMember(member);
         memberRepository.delete(member);
 
+        // 5. 채팅방 퇴장 메시지 저장 및 반환
+        String content = user.getPetName() + "가 " + community.getTitle() + "을 떠났어요.";
+
+        // 채팅방 저장용
+        CommunityChat communityChat =
+                CommunityChat.toCommunityChat(content, MessageType.ANNOUNCE, community, user);
+        communityChatRepository.save(communityChat);
+
+        // 채팅방 반환용 DTO
+        CommunityChatResponseDTO responseMessage =
+                chatConverter.toCommunityChatResponseDTO(content, MessageType.ANNOUNCE, user);
+        messagingTemplate.convertAndSend("/topic/chatroom/" + communityId, responseMessage);
         return ResponseEntity.ok(ApiResponse.onSuccess("커뮤니티 탈퇴에 성공하였습니다."));
     }
 
