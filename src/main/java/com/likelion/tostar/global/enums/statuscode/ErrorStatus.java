@@ -26,7 +26,14 @@ public enum ErrorStatus implements BaseCode {
 	_MEMBER_ALREADY_JOINED(HttpStatus.FORBIDDEN, "MEMBER4001", "이미 커뮤니티에 존재하는 회원입니다."),
 	_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER4002", "이미 탈퇴되었거나 커뮤니티에 존재하지 않는 회원입니다."),
 
-	// Letter 관련 예외 코드들
+	// Article Error
+	_ARTICLE_TITLE_MISSING(HttpStatus.BAD_REQUEST, "ARTICLE4001", "제목을 입력해 주세요."),
+	_ARTICLE_CONTENT_MISSING(HttpStatus.BAD_REQUEST, "ARTICLE4002", "내용을 입력해 주세요."),
+	_NOT_OWNER_OF_ARTICLE(HttpStatus.FORBIDDEN, "ARTICLE4031", "해당 추억(게시글)의 주인이 아닙니다."),
+	_ARTICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "ARTICLE4041", "해당 추억을 찾을 수 없습니다."),
+
+
+	// Letter Error
 	_LETTER_CONTENT_MISSING(HttpStatus.BAD_REQUEST, "LETTER4001", "편지 내용을 입력해 주세요."),
 	_NOT_OWNER_OF_LETTER(HttpStatus.FORBIDDEN, "LETTER4031", "해당 편지의 주인이 아닙니다."),
 	_LETTER_NOT_FOUND(HttpStatus.NOT_FOUND, "LETTER4041", "해당 편지를 찾을 수 없습니다."),
@@ -37,6 +44,7 @@ public enum ErrorStatus implements BaseCode {
 	_S3_CLIENT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "S35002", "S3 클라이언트 오류가 발생했습니다."),
 	_S3_FILE_PROCESSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "S35003", "파일 처리 중 오류가 발생했습니다."),
 	_S3_REMOVE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "S35004", "S3 파일 삭제 중 오류가 발생하였습니다."),
+	_ARTICLE_TOO_MANY_IMAGES(HttpStatus.BAD_REQUEST, "ARTICLE4003", "최대 5개의 이미지까지 업로드할 수 있습니다."),
 
 	// Community
 	_COMMUNITY_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMUNITY4001", "삭제되었거나 존재하지 않는 커뮤니티입니다."),

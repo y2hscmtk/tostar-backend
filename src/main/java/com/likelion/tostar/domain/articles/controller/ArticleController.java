@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +24,8 @@ public class ArticleController {
     @PostMapping
     public ResponseEntity<?> createArticle(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestBody ArticlePostRequestDto articlePostRequestDto) {
-        return articleService.createArticle(customUserDetails.getId(), articlePostRequestDto);
+            @ModelAttribute ArticlePostRequestDto articlePostRequestDto,
+            @RequestParam(value = "images", required = false) List<MultipartFile> images) {
+        return articleService.createArticle(customUserDetails.getId(), articlePostRequestDto, images);
     }
 }
