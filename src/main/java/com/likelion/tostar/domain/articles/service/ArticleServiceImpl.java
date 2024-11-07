@@ -141,6 +141,7 @@ public class ArticleServiceImpl implements ArticleService {
         // Entity 삭제
         articleRepository.delete(article);
 
+        // 200 : 추억 삭제 성공
         return ResponseEntity.status(200)
                 .body(ApiResponse.onSuccess("추억 삭제에 성공했습니다."));
     }
