@@ -14,5 +14,5 @@ public interface ArticleService {
     ResponseEntity<?> modifyArticle(Long articleId, Long userId, ArticleCreateModifyRequestDto articleCreateModifyRequestDto, List<MultipartFile> images);
 
     // 추억 삭제
-    ResponseEntity<?> deleteArticle(Long articleId, Long id);
+    ResponseEntity<?> deleteArticle(Long articleId, Long userId);
 }

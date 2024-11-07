@@ -115,16 +115,47 @@ public class ArticleServiceImpl implements ArticleService {
         return createArticleResponse(article);
     }
 
-    // ================== 편의 메서드 ====================
+    /**
+     * 추억 삭제 메서드
+     */
+    @Override
+    public ResponseEntity<?> deleteArticle(Long articleId, Long userId) {
+        // 404 : 해당 회원이 실제로 존재하는지 확인
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+
+
+        // 404 : 존재하지 않는 추억
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._ARTICLE_NOT_FOUND));
+
+        // 403 : 추억의 주인이 아님
+        if (!article.getUser().getId().equals(userId)) {
+            return ResponseEntity.status(403)
+                    .body(ApiResponse.onFailure(ErrorStatus._NOT_OWNER_OF_ARTICLE, null));
+        }
+
+        // S3 삭제
+        deleteExistingImages(article);
+
+        // Entity 삭제
+        articleRepository.delete(article);
+
+        return ResponseEntity.status(200)
+                .body(ApiResponse.onSuccess("추억 삭제에 성공했습니다."));
+    }
+
+    // ========================= 편의 메서드 ==========================
+
     // 추억의 기존 이미지 삭제 메서드
     private void deleteExistingImages(Article article) {
         for (ArticleImage existingImage : article.getImages()) {
             s3Service.deleteFileByURL(existingImage.getUrl()); // S3에서 이미지 삭제
         }
-        article.getImages().clear();
+        article.getImages().clear(); // article의 article_image 삭제
     }
 
-    // S3 이미지 업로드 후 articleImages 반환
+    // S3 이미지 업로드 후 articleImages 반환 메서드
     private List<ArticleImage> uploadImages(List<MultipartFile> images) {
         List<ArticleImage> articleImages = new ArrayList<>();
         if (images != null && !images.isEmpty()) {
