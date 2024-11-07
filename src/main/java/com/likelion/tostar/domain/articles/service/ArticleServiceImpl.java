@@ -74,7 +74,7 @@ public class ArticleServiceImpl implements ArticleService {
         // DB에 추억 저장
         articleRepository.save(article);
 
-        // 응답 생성
+        // 201 : 추억 생성 성공
         return createArticleResponse(article);
     }
 
@@ -103,7 +103,7 @@ public class ArticleServiceImpl implements ArticleService {
         // 추억 수정 (이미지 제외한 정보들 수정)
         article.updateArticle(title, content);
 
-        // 기존 이미지 삭제 및 새 이미지 업로드
+        // 추억 수정 (기존 이미지 삭제 & 새 이미지 업로드)
         deleteExistingImages(article);
         List<ArticleImage> newImages = uploadImages(images);
         article.updateImages(newImages);
@@ -111,13 +111,12 @@ public class ArticleServiceImpl implements ArticleService {
         // DB에 추억 저장
         articleRepository.save(article);
 
-        // 응답 생성
+        // 200 : 추억 수정 성공
         return createArticleResponse(article);
     }
 
-    /**
-     * 기존 이미지 삭제 메서드
-     */
+    // ================== 편의 메서드 ====================
+    // 추억의 기존 이미지 삭제 메서드
     private void deleteExistingImages(Article article) {
         for (ArticleImage existingImage : article.getImages()) {
             s3Service.deleteFileByURL(existingImage.getUrl()); // S3에서 이미지 삭제
@@ -125,9 +124,7 @@ public class ArticleServiceImpl implements ArticleService {
         article.getImages().clear();
     }
 
-    /**
-     * 이미지 업로드 및 ArticleImage 엔티티 생성 메서드
-     */
+    // S3 이미지 업로드 후 articleImages 반환
     private List<ArticleImage> uploadImages(List<MultipartFile> images) {
         List<ArticleImage> articleImages = new ArrayList<>();
         if (images != null && !images.isEmpty()) {
@@ -144,9 +141,7 @@ public class ArticleServiceImpl implements ArticleService {
         return articleImages;
     }
 
-    /**
-     * 게시글 응답 생성 메서드
-     */
+    // (추억 등록, 수정 성공) 응답 반환 메서드
     private ResponseEntity<?> createArticleResponse(Article article) {
         List<ImageResponseDto> imageResponseDtos = new ArrayList<>();
         for (ArticleImage articleImage : article.getImages()) {
