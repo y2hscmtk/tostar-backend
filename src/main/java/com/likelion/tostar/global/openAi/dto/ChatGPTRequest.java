@@ -19,7 +19,7 @@ public class ChatGPTRequest {
         this.messages.add(new Message("user", prompt));
     }
 
-    // 챗봇을 위한 기능 (프리캡스톤, 고모프 등..)
+    // 챗봇을 위한 기능
     public void addMessage(String role, String content) {
         this.messages.add(new Message(role, content)); // 대화 리스트 추가
     }
