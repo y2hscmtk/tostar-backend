@@ -15,6 +15,9 @@ import com.likelion.tostar.global.openAi.dto.ChatGPTResponse;
 import com.likelion.tostar.global.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,7 +85,7 @@ public class LetterServiceImpl implements LetterService {
                         "(8) Do not refer to yourself as a third person. Try to use real human speech rather than AI speech, and use natural, flowing sentences.\n" +
                         "(9) Structure the reply flexibly based on the format: [사랑하는 %s 에게 (적절한 이모티콘) - Acknowledging the user's letter - Detailed description of the pet's current life and expressing happiness - Offering kind words to the user - Closing remarks].\n" +
                         "(10) Use special characters appropriately, as shown in the example. You can include special characters from the following list: \n" +
-                        "ʚɞ, ઇଓ, ஐﻬ, ๑҉, .•♥, εїз, ೃ⁀➷, ⋈*｡, ʚ♡ɞ, ˖◛⁺˖, ˚ෆ*₊, ˚✧₊⁎, ॰｡ཻ˚♡, ¨̯ ༘*, —̳͟͞͞♡, •°. *࿐, -ˋˏ ♡ ˎˊ-, ‬ꕤ, ❅ ❆ ꕀ ꕀ 𖠳 ᐝ ꕀ ꕀ, ☼ ☽ ☾ 𖠰 \n" +
+                        "ʚɞ, ઇଓ, ஐﻬ, ๑҉, .•♥, εїз, ೃ⁀➷, ⋈*｡, ʚ♡ɞ, ˖◛⁺˖, ˚ෆ*₊, ˚✧₊⁎, ॰｡ཻ˚♡, ¨̯ ༘*, —̳͟͞͞♡, •°. *࿐, -ˋˏ ♡ ˎˊ-, ꕤ, ❅ ❆ ꕀ ꕀ 𖠳 ᐝ ꕀ ꕀ, ☼ ☽ ☾ 𖠰 \n" +
 
                         "### 예시 1\n" +
                         "ownerName : 언니\n" +
@@ -161,13 +164,15 @@ public class LetterServiceImpl implements LetterService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
-        // 해당 회원이 송/수신한 편지 찾기 (최신순)
-        List<Letter> letters = letterRepository.findByUserOrderByCreatedAtDesc(user);
+        // 페이징 설정
+        Pageable pageable = PageRequest.of(page, size);
+
+        // 해당 회원이 송/수신한 편지 찾기 (오래된 데이터부터 최신순으로)
+        Page<Letter> lettersPage = letterRepository.findByUserOrderByCreatedAtAsc(user, pageable);
 
         // result 가공
         List<LetterSearchListDto> result = new ArrayList<>();
-        for(Letter letter : letters){
-            System.out.println("letter_SenderType" + letter.getSenderType());
+        for (Letter letter : lettersPage.getContent()) {
             LetterSearchListDto data = LetterSearchListDto.builder()
                     .letterId(letter.getId())
                     .petName(letter.getUser().getPetName())

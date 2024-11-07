@@ -21,6 +21,5 @@ public class ChatGPTResponse {
     public static class Choice { // 이런 형태로 답장이 옴
         private int index;
         private Message message;
-
     }
 }
