@@ -1,6 +1,6 @@
 package com.likelion.tostar.domain.articles.service;
 
-import com.likelion.tostar.domain.articles.dto.ArticlePostRequestDto;
+import com.likelion.tostar.domain.articles.dto.ArticleCreateModifyRequestDto;
 import com.likelion.tostar.domain.articles.dto.ArticlePostResponseDto;
 import com.likelion.tostar.domain.articles.dto.ArticlePostResponseDto.ImageResponseDto;
 import com.likelion.tostar.domain.articles.entity.Article;
@@ -21,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -32,16 +31,16 @@ public class ArticleServiceImpl implements ArticleService {
     private final S3Service s3Service;
 
     /**
-     * 게시글 작성 메서드
+     * 추억 등록 메서드
      */
     @Override
-    public ResponseEntity<?> createArticle(Long userId, ArticlePostRequestDto articlePostRequestDto, List<MultipartFile> images) {
+    public ResponseEntity<?> createArticle(Long userId, ArticleCreateModifyRequestDto articleCreateModifyRequestDto, List<MultipartFile> images) {
         // 404 : 해당 회원이 실제로 존재하는지 확인
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
-        String title = articlePostRequestDto.getTitle();
-        String content = articlePostRequestDto.getContent();
+        String title = articleCreateModifyRequestDto.getTitle();
+        String content = articleCreateModifyRequestDto.getContent();
 
         // 400 : 제목이 비어있는 경우
         if (title == null || title.isBlank()) {
@@ -55,7 +54,7 @@ public class ArticleServiceImpl implements ArticleService {
                     .body(ApiResponse.onFailure(ErrorStatus._ARTICLE_CONTENT_MISSING, null));
         }
 
-        // Article 엔티티 빌드 및 사용자 정보 설정
+        // Article 생성 (이미지 제외)
         Article article = Article.builder()
                 .user(user)
                 .title(title)
@@ -68,36 +67,84 @@ public class ArticleServiceImpl implements ArticleService {
                     .body(ApiResponse.onFailure(ErrorStatus._ARTICLE_TOO_MANY_IMAGES, null));
         }
 
-        // S3 이미지 파일 업로드
+        // S3 이미지 업로드 및 ArticleImage 엔티티 생성
+        List<ArticleImage> articleImages = uploadImages(images);
+        article.updateImages(articleImages);
+
+        // DB에 추억 저장
+        articleRepository.save(article);
+
+        // 201 : 추억 생성 성공
+        return createArticleResponse(article);
+    }
+
+    /**
+     * 추억 수정 메서드
+     */
+    @Override
+    public ResponseEntity<?> modifyArticle(Long articleId, Long userId, ArticleCreateModifyRequestDto articleCreateModifyRequestDto, List<MultipartFile> images) {
+        // 404 : 해당 회원이 실제로 존재하는지 확인
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+
+        String title = articleCreateModifyRequestDto.getTitle();
+        String content = articleCreateModifyRequestDto.getContent();
+
+        // 404 : 존재하지 않는 추억
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._ARTICLE_NOT_FOUND));
+
+        // 403 : 추억의 주인이 아님
+        if (!article.getUser().getId().equals(userId)) {
+            return ResponseEntity.status(403)
+                    .body(ApiResponse.onFailure(ErrorStatus._NOT_OWNER_OF_ARTICLE, null));
+        }
+
+        // 추억 수정 (이미지 제외한 정보들 수정)
+        article.updateArticle(title, content);
+
+        // 추억 수정 (기존 이미지 삭제 & 새 이미지 업로드)
+        deleteExistingImages(article);
+        List<ArticleImage> newImages = uploadImages(images);
+        article.updateImages(newImages);
+
+        // DB에 추억 저장
+        articleRepository.save(article);
+
+        // 200 : 추억 수정 성공
+        return createArticleResponse(article);
+    }
+
+    // ================== 편의 메서드 ====================
+    // 추억의 기존 이미지 삭제 메서드
+    private void deleteExistingImages(Article article) {
+        for (ArticleImage existingImage : article.getImages()) {
+            s3Service.deleteFileByURL(existingImage.getUrl()); // S3에서 이미지 삭제
+        }
+        article.getImages().clear();
+    }
+
+    // S3 이미지 업로드 후 articleImages 반환
+    private List<ArticleImage> uploadImages(List<MultipartFile> images) {
         List<ArticleImage> articleImages = new ArrayList<>();
-        if (images != null) {
+        if (images != null && !images.isEmpty()) {
             for (MultipartFile image : images) {
                 try {
-                    // S3에 이미지 업로드
                     String imageUrl = s3Service.uploadFile(image);
-
-                    // ArticleImage 엔티티 생성
-                    ArticleImage articleImage = ArticleImage.builder()
-                            .url(imageUrl)
-                            .build();
-                    article.addImage(articleImage);
-
-                    // articleImages 에 추가
+                    ArticleImage articleImage = ArticleImage.builder().url(imageUrl).build();
                     articleImages.add(articleImage);
-
                 } catch (IOException e) {
-                    // 파일 업로드 실패 시 예외 처리
                     throw new GeneralException(ErrorStatus._S3_UPLOAD_FAIL);
                 }
             }
         }
+        return articleImages;
+    }
 
-        // Article 엔티티 저장
-        articleRepository.save(article);
-
-        // imageResponseDtos 생성
+    // (추억 등록, 수정 성공) 응답 반환 메서드
+    private ResponseEntity<?> createArticleResponse(Article article) {
         List<ImageResponseDto> imageResponseDtos = new ArrayList<>();
-        for (ArticleImage articleImage : articleImages) {
+        for (ArticleImage articleImage : article.getImages()) {
             ImageResponseDto imageResponseDto = ImageResponseDto.builder()
                     .imageId(articleImage.getId())
                     .url(articleImage.getUrl())
@@ -105,7 +152,6 @@ public class ArticleServiceImpl implements ArticleService {
             imageResponseDtos.add(imageResponseDto);
         }
 
-        // ArticlePostResponseDto 생성
         ArticlePostResponseDto responseDto = ArticlePostResponseDto.builder()
                 .articleId(article.getId())
                 .title(article.getTitle())
@@ -115,7 +161,6 @@ public class ArticleServiceImpl implements ArticleService {
                 .images(imageResponseDtos)
                 .build();
 
-        // 201 : 게시글 작성 성공
-        return ResponseEntity.status(201).body(ApiResponse.onSuccess(responseDto));
+        return ResponseEntity.status(200).body(ApiResponse.onSuccess(responseDto));
     }
 }
