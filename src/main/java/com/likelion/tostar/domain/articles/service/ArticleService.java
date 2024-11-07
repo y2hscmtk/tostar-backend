@@ -1,12 +1,15 @@
 package com.likelion.tostar.domain.articles.service;
 
-import com.likelion.tostar.domain.articles.dto.ArticlePostRequestDto;
+import com.likelion.tostar.domain.articles.dto.ArticleCreateModifyRequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface ArticleService {
-    // 게시글 생성
-    ResponseEntity<?> createArticle(Long userId, ArticlePostRequestDto articlePostRequestDto, List<MultipartFile> images);
+    // 추억 등록
+    ResponseEntity<?> createArticle(Long userId, ArticleCreateModifyRequestDto articleCreateModifyRequestDto, List<MultipartFile> images);
+
+    // 추억 수정
+    ResponseEntity<?> modifyArticle(Long articleId, Long userId, ArticleCreateModifyRequestDto articleCreateModifyRequestDto, List<MultipartFile> images);
 }

@@ -28,15 +28,34 @@ public class Article extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
-    // ArticleImage의 생명주기를 Article에 종속
+    @OneToMany(mappedBy = "article",
+            cascade = CascadeType.ALL, orphanRemoval = true)
+            // ArticleImage의 생명주기를 Article에 종속
     @Builder.Default
     private List<ArticleImage> images = new ArrayList<>();
 
 
-    // ======= 편의 메서드 =========
+    // ========== 편의 메서드 ===========
+    // 이미지 추가
     public void addImage(ArticleImage image) {
         images.add(image);
         image.addArticle(this);
+    }
+
+    // 추억 수정 (이미지 제외)
+    public void updateArticle(String newTitle, String newContent) {
+        this.title = newTitle;
+        this.content = newContent;
+    }
+
+    // 이미지 수정
+    public void updateImages(List<ArticleImage> newImages) {
+        // 기존 이미지 모두 제거
+        images.clear();
+
+        // 새로운 이미지 추가
+        for (ArticleImage newImage : newImages) {
+            addImage(newImage);
+        }
     }
 }

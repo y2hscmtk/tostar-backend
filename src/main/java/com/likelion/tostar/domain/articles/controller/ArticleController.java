@@ -1,6 +1,6 @@
 package com.likelion.tostar.domain.articles.controller;
 
-import com.likelion.tostar.domain.articles.dto.ArticlePostRequestDto;
+import com.likelion.tostar.domain.articles.dto.ArticleCreateModifyRequestDto;
 import com.likelion.tostar.domain.articles.service.ArticleService;
 import com.likelion.tostar.global.jwt.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +19,25 @@ public class ArticleController {
     private final ArticleService articleService;
 
     /**
-     * 게시글 작성
+     * 추억 등록하기
      */
     @PostMapping
     public ResponseEntity<?> createArticle(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @ModelAttribute ArticlePostRequestDto articlePostRequestDto,
+            @ModelAttribute ArticleCreateModifyRequestDto articleCreateModifyRequestDto,
             @RequestParam(value = "images", required = false) List<MultipartFile> images) {
-        return articleService.createArticle(customUserDetails.getId(), articlePostRequestDto, images);
+        return articleService.createArticle(customUserDetails.getId(), articleCreateModifyRequestDto, images);
+    }
+
+    /**
+     * 추억 수정하기
+     */
+    @GetMapping("{articleId}")
+    public ResponseEntity<?> modifyArticle(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable("articleId") Long articleId,
+            @ModelAttribute ArticleCreateModifyRequestDto articleCreateModifyRequestDto,
+            @RequestParam(value = "images", required = false) List<MultipartFile> images) {
+        return articleService.modifyArticle(articleId, customUserDetails.getId(), articleCreateModifyRequestDto, images);
     }
 }
