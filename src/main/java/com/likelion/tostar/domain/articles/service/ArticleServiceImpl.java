@@ -55,7 +55,7 @@ public class ArticleServiceImpl implements ArticleService {
                     .body(ApiResponse.onFailure(ErrorStatus._ARTICLE_CONTENT_MISSING, null));
         }
 
-        // Article 엔티티 빌드 및 사용자 정보 설정
+        // Article 생성 (이미지 제외)
         Article article = Article.builder()
                 .user(user)
                 .title(title)
@@ -80,19 +80,19 @@ public class ArticleServiceImpl implements ArticleService {
                     ArticleImage articleImage = ArticleImage.builder()
                             .url(imageUrl)
                             .build();
-                    article.addImage(articleImage);
+                    article.addImage(articleImage); // article에 이미지 추가
 
                     // articleImages 에 추가
                     articleImages.add(articleImage);
 
                 } catch (IOException e) {
-                    // 파일 업로드 실패 시 예외 처리
+                    // 파일 업로드 실패
                     throw new GeneralException(ErrorStatus._S3_UPLOAD_FAIL);
                 }
             }
         }
 
-        // Article 엔티티 저장
+        // DB에 article 저장
         articleRepository.save(article);
 
         // imageResponseDtos 생성
@@ -112,7 +112,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .content(article.getContent())
                 .createdAt(article.localDateTimeToString())
                 .updatedAt(article.localDateTimeToString())
-                .images(imageResponseDtos)
+                .images(imageResponseDtos) // 앞서 생성한 imageResponseDtos
                 .build();
 
         // 201 : 게시글 작성 성공
