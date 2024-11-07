@@ -40,4 +40,14 @@ public class ArticleController {
             @RequestParam(value = "images", required = false) List<MultipartFile> images) {
         return articleService.modifyArticle(articleId, customUserDetails.getId(), articleCreateModifyRequestDto, images);
     }
+
+    /**
+     * 추억 삭제하기
+     */
+    @DeleteMapping("{articleId}")
+    public ResponseEntity<?> deleteArticle(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable("articleId") Long articleId) {
+        return articleService.deleteArticle(articleId, customUserDetails.getId());
+    }
 }
