@@ -66,13 +66,14 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
         // 1. 회원 정보 조회
         User user = findUserByEmail(email);
 
-        // 2. 커뮤니티 이름 중복 검사
-        communityRepository.findByTitle(communityFormDTO.getTitle()).ifPresent(community -> {
-            throw new GeneralException(ErrorStatus._DUPLICATE_COMMUNITY_TITLE);
-        });
-
-        // 3. 커뮤니티 존재 확인
+        // 2. 커뮤니티 존재 확인
         Community community = findCommunityById(communityId);
+
+        // 3. 커뮤니티 이름 중복 검사
+        communityRepository.findByTitle(communityFormDTO.getTitle()).ifPresent(findCommunity -> {
+            if(!community.getTitle().equals(findCommunity.getTitle()))// 원본 이름을 그대로 유지하는 경우는 상관없음
+                throw new GeneralException(ErrorStatus._DUPLICATE_COMMUNITY_TITLE);
+        });
 
         // 4. 회원이 커뮤니티 주인인지 확인
         if (!community.getOwner().equals(user)) {
@@ -85,8 +86,10 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
         // 5.2. 커뮤니티 정보 변경
         community.changeCommunityInfo(communityFormDTO);
         // 5.3. 새로운 이미지 저장
-        if (!image.isEmpty()) {
+        if (image!=null&&!image.isEmpty()) { // 이미지가 있을 경우 -> 새롭게 업로드
             community.changeProfileImage(s3Service.uploadFile(image));
+        } else { // 이미지가 없을 경우 -> 기본 이미지
+            community.changeProfileImage(null);
         }
 
         return ResponseEntity.ok(ApiResponse.onSuccess("커뮤니티가 수정되었습니다."));
