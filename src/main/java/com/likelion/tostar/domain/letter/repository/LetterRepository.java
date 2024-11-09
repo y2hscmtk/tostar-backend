@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 
 
 public interface LetterRepository extends JpaRepository<Letter, Long> {
-    // 해당 회원이 쓴 편지 페이징 조회(오래된 데이터부터 최신순으로)
-    Page<Letter> findByUserOrderByCreatedAtAsc(User user, Pageable pageable);
+    // 해당 회원이 쓴 편지 페이징 조회(최신 데이터부터 오래된 순으로)
+    Page<Letter> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
 }
 
