@@ -168,7 +168,7 @@ public class LetterServiceImpl implements LetterService {
         Pageable pageable = PageRequest.of(page, size);
 
         // 해당 회원이 송/수신한 편지 찾기 (오래된 데이터부터 최신순으로)
-        Page<Letter> lettersPage = letterRepository.findByUserOrderByCreatedAtAsc(user, pageable);
+        Page<Letter> lettersPage = letterRepository.findByUserOrderByCreatedAtDesc(user, pageable);
 
         // result 가공
         List<LetterSearchListDto> result = new ArrayList<>();
