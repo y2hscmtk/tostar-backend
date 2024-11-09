@@ -44,11 +44,16 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
         // 1. 회원 정보 조회
         User user = findUserByEmail(email);
 
-        // 2. 커뮤니티 생성
+        // 2. 커뮤니티 이름 중복 검사
+        communityRepository.findByTitle(communityFormDTO.getTitle()).ifPresent(community -> {
+            throw new GeneralException(ErrorStatus._DUPLICATE_COMMUNITY_TITLE);
+        });
+
+        // 3. 커뮤니티 생성
         Community community = communityConverter.toCommunity(image,communityFormDTO);
         user.createCommunity(community);
 
-        // 3. 커뮤니티 저장(+멤버 저장)
+        // 4. 커뮤니티 저장(+멤버 저장)
         communityRepository.save(community);
 
         return ResponseEntity.ok(ApiResponse.onSuccess("커뮤니티가 생성되었습니다."));

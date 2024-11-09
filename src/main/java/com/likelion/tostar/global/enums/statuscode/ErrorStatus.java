@@ -48,6 +48,7 @@ public enum ErrorStatus implements BaseCode {
 
 	// Community
 	_COMMUNITY_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMUNITY4001", "삭제되었거나 존재하지 않는 커뮤니티입니다."),
+	_DUPLICATE_COMMUNITY_TITLE(HttpStatus.FORBIDDEN, "COMMUNITY4002", "해당하는 이름의 커뮤니티가 이미 존재합니다. 다른 이름으로 작성해주세요."),
 
 
 	// Resource Error
