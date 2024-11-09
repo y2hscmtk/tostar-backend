@@ -79,7 +79,10 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
-        user.changeProfileImage(s3Service.uploadFile(image));
+        // 이미지가 존재하는 경우에만 이미지 업로드 및 설정
+        if(image!=null && !image.isEmpty()){
+            user.changeProfileImage(s3Service.uploadFile(image));
+        }
 
         return getJwtResponseEntity(user);
     }
