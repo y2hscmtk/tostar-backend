@@ -26,8 +26,12 @@ public class CommunityConverter {
     }
 
     public Community toCommunity(MultipartFile image,CommunityFormDTO communityFormDTO) throws IOException {
+        String imageURL = null;
+        if(image!=null && !image.isEmpty()){
+            imageURL = s3Service.uploadFile(image);
+        }
         return Community.builder()
-                .profileImage(s3Service.uploadFile(image))
+                .profileImage(imageURL)
                 .title(communityFormDTO.getTitle())
                 .description(communityFormDTO.getDescription())
                 .build();
