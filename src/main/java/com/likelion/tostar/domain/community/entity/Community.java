@@ -32,6 +32,7 @@ public class Community extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private User owner; // 커뮤니티 생성자 - 방장
+    @Column(unique = true) // 커뮤니티 이름은 고유
     private String title; // 커뮤니티 제목
     private String description; // 커뮤니티 설명
     @Column(name = "profile_image")
