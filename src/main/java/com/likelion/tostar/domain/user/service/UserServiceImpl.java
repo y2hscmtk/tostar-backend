@@ -113,12 +113,11 @@ public class UserServiceImpl implements UserService {
 
         // 기존 프로필 이미지 삭제
         s3Service.deleteFileByURL(user.getProfileImage());
-
         user.changeUserInfo(userInfoDTO); // 회원 정보 수정
-
-        if (!image.isEmpty()) {
-            // 새로운 프로필 이미지 업로드
+        if (image!=null&&!image.isEmpty()) { // 새로운 이미지 갱신시
             user.changeProfileImage(s3Service.uploadFile(image)); // 사용자 정보 갱신
+        } else{ // 이미지 없을 경우 null(기본 이미지)로 변경
+            user.changeProfileImage(null);
         }
 
         return ResponseEntity.ok(ApiResponse.onSuccess("회원정보가 수정되었습니다."));
