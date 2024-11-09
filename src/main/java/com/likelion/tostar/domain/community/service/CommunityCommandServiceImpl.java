@@ -66,20 +66,25 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
         // 1. 회원 정보 조회
         User user = findUserByEmail(email);
 
-        // 2. 커뮤니티 존재 확인
+        // 2. 커뮤니티 이름 중복 검사
+        communityRepository.findByTitle(communityFormDTO.getTitle()).ifPresent(community -> {
+            throw new GeneralException(ErrorStatus._DUPLICATE_COMMUNITY_TITLE);
+        });
+
+        // 3. 커뮤니티 존재 확인
         Community community = findCommunityById(communityId);
 
-        // 3. 회원이 커뮤니티 주인인지 확인
+        // 4. 회원이 커뮤니티 주인인지 확인
         if (!community.getOwner().equals(user)) {
             throw new GeneralException(ErrorStatus._FORBIDDEN);
         }
 
-        // 4. 커뮤니티 값 수정
-        // 4.1. 기존 이미지 삭제
+        // 5. 커뮤니티 값 수정
+        // 5.1. 기존 이미지 삭제
         s3Service.deleteFileByURL(community.getProfileImage());
-        // 4.2. 커뮤니티 정보 변경
+        // 5.2. 커뮤니티 정보 변경
         community.changeCommunityInfo(communityFormDTO);
-        // 4.3. 새로운 이미지 저장
+        // 5.3. 새로운 이미지 저장
         if (!image.isEmpty()) {
             community.changeProfileImage(s3Service.uploadFile(image));
         }
