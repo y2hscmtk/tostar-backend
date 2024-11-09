@@ -35,7 +35,7 @@ public class UserController {
      */
     @PostMapping("/join")
     public ResponseEntity<?> join(
-            @RequestParam("image") MultipartFile image,
+            @RequestParam(value = "image", required = false) MultipartFile image,
             @Valid @ModelAttribute UserJoinDTO userJoinDTO) throws IOException {
         return userService.join(image, userJoinDTO);
     }
@@ -56,7 +56,7 @@ public class UserController {
     @PutMapping("/edit")
     public ResponseEntity<?> edit(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam("image") MultipartFile image,
+            @RequestParam(value = "image",required = false) MultipartFile image,
             @Valid @ModelAttribute UserInfoDTO userInfoDTO) throws IOException {
         return userService.edit(image, userInfoDTO, customUserDetails.getEmail());
     }

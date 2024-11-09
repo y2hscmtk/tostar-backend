@@ -77,7 +77,7 @@ public class CommunityController {
      */
     @PostMapping()
     public ResponseEntity<?> createCommunity(
-            @RequestParam("image") MultipartFile image,
+            @RequestParam(value = "image",required = false) MultipartFile image,
             @ModelAttribute CommunityFormDTO communityFormDTO,
             @AuthenticationPrincipal CustomUserDetails customUserDetails) throws IOException {
 
@@ -90,7 +90,7 @@ public class CommunityController {
      */
     @PutMapping("/{communityId}")
     public ResponseEntity<?> editCommunity(
-            @RequestParam("image") MultipartFile image,
+            @RequestParam(value = "image",required = false) MultipartFile image,
             @PathVariable("communityId") Long communityId,
             @ModelAttribute CommunityFormDTO communityFormDTO,
             @AuthenticationPrincipal CustomUserDetails customUserDetails) throws IOException {
