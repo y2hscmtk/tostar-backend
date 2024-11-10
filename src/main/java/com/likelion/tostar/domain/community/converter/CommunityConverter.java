@@ -37,10 +37,10 @@ public class CommunityConverter {
                 .build();
     }
 
-    public CommunityProfileResponseDTO toCommunityProfileResponseDTO(Community community) {
+    public CommunityProfileResponseDTO toCommunityProfileResponseDTO(Community community, String email) {
         User owner = community.getOwner();
         return CommunityProfileResponseDTO.builder()
-                .ownerEmail(owner.getEmail())
+                .isOwner(owner.getEmail().equals(email))
                 .ownerPetName(owner.getPetName())
                 .ownerPetProfileImage(owner.getProfileImage())
                 .communityId(community.getId())

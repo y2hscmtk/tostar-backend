@@ -15,7 +15,7 @@ public interface CommunityQueryService {
 
     ResponseEntity<?> getMyCommunities(Pageable pageable, String email);
 
-    ResponseEntity<?> getCommunityPreview(Long communityId);
+    ResponseEntity<?> getCommunityPreview(Long communityId, String email);
 
     ResponseEntity<?> membershipCheck(Long communityId, String email);
 }
