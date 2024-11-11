@@ -8,10 +8,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommentConverter {
 
-    public CommentResponseDTO toCommentResponseDTO(Comment comment) {
+    public CommentResponseDTO toCommentResponseDTO(Comment comment, User user) {
         User author = comment.getAuthor();
         return CommentResponseDTO.builder()
                 .commentId(comment.getId())
+                .isMine(user == author)
                 .petName(author.getPetName())
                 .profileImage(author.getProfileImage())
                 .content(comment.getContent())

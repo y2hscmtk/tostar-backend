@@ -22,8 +22,9 @@ public class CommentController {
      * 특정 게시글에 대한 댓글들을 최신순으로 조회
      */
     @GetMapping("/{articleId}")
-    public ResponseEntity<?> getComments(@PathVariable Long articleId) {
-        return commentQueryService.getCommentsByArticleId(articleId);
+    public ResponseEntity<?> getComments(
+            @PathVariable Long articleId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return commentQueryService.getCommentsByArticleId(articleId,customUserDetails.getEmail());
     }
 
     /**

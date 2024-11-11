@@ -42,7 +42,7 @@ public class CommentCommandServiceImpl implements CommentCommandService {
         // 3. 댓글 엔티티 생성 및 저장
         Comment comment = commentRepository.save(Comment.toEntity(commentRequestDTO, article, user));
         // 4. 반환 DTO 생성 및 반환
-        return ResponseEntity.ok(ApiResponse.onSuccess(commentConverter.toCommentResponseDTO(comment)));
+        return ResponseEntity.ok(ApiResponse.onSuccess(commentConverter.toCommentResponseDTO(comment,user)));
     }
 
     /**
@@ -60,7 +60,7 @@ public class CommentCommandServiceImpl implements CommentCommandService {
         }
         // 4. 댓글 수정
         comment.changeContent(commentRequestDTO.getContent());
-        return ResponseEntity.ok(ApiResponse.onSuccess(commentConverter.toCommentResponseDTO(comment)));
+        return ResponseEntity.ok(ApiResponse.onSuccess(commentConverter.toCommentResponseDTO(comment,user)));
     }
 
     /**
