@@ -1,11 +1,11 @@
 package com.likelion.tostar.domain.comment.entity;
 
-import com.likelion.tostar.global.entity.BaseEntity;
-import com.likelion.tostar.domain.article.Article;
 import com.likelion.tostar.domain.user.entity.User;
+import com.likelion.tostar.global.entity.BaseEntity;
+import com.likelion.tostar.domain.articles.entity.Article;
 
 import jakarta.persistence.*;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
@@ -25,10 +25,9 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "articleId", nullable = false)
     private Article article;
 
-    // 작성자 ID (FK)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId", nullable = false)
-    private Long userId;
+    private User user;
 
     // 댓글 내용
     @NotBlank(message = "댓글 내용이 비어있습니다.")

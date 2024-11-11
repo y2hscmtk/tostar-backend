@@ -67,8 +67,10 @@ public class CommunityController {
      * 특정 커뮤니티 미리보기
      */
     @GetMapping("{communityId}/preview")
-    public ResponseEntity<?> getCommunityPreview(@PathVariable("communityId") Long communityId) {
-        return communityQueryService.getCommunityPreview(communityId);
+    public ResponseEntity<?> getCommunityPreview(
+            @PathVariable("communityId") Long communityId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return communityQueryService.getCommunityPreview(communityId, customUserDetails.getEmail());
     }
 
     /**
@@ -77,7 +79,7 @@ public class CommunityController {
      */
     @PostMapping()
     public ResponseEntity<?> createCommunity(
-            @RequestParam("image") MultipartFile image,
+            @RequestParam(value = "image",required = false) MultipartFile image,
             @ModelAttribute CommunityFormDTO communityFormDTO,
             @AuthenticationPrincipal CustomUserDetails customUserDetails) throws IOException {
 
@@ -90,7 +92,7 @@ public class CommunityController {
      */
     @PutMapping("/{communityId}")
     public ResponseEntity<?> editCommunity(
-            @RequestParam("image") MultipartFile image,
+            @RequestParam(value = "image",required = false) MultipartFile image,
             @PathVariable("communityId") Long communityId,
             @ModelAttribute CommunityFormDTO communityFormDTO,
             @AuthenticationPrincipal CustomUserDetails customUserDetails) throws IOException {

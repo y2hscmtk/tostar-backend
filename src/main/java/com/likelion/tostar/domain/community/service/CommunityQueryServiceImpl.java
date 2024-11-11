@@ -84,10 +84,10 @@ public class CommunityQueryServiceImpl implements CommunityQueryService{
     }
 
     @Override
-    public ResponseEntity<?> getCommunityPreview(Long communityId) {
+    public ResponseEntity<?> getCommunityPreview(Long communityId, String email) {
         Community community = findCommunityById(communityId);
         CommunityProfileResponseDTO resultDTO = communityConverter.toCommunityProfileResponseDTO(
-                community);
+                community, email);
         return ResponseEntity.ok(ApiResponse.onSuccess(resultDTO));
     }
 

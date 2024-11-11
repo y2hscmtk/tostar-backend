@@ -44,11 +44,16 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
         // 1. 회원 정보 조회
         User user = findUserByEmail(email);
 
-        // 2. 커뮤니티 생성
+        // 2. 커뮤니티 이름 중복 검사
+        communityRepository.findByTitle(communityFormDTO.getTitle()).ifPresent(community -> {
+            throw new GeneralException(ErrorStatus._DUPLICATE_COMMUNITY_TITLE);
+        });
+
+        // 3. 커뮤니티 생성
         Community community = communityConverter.toCommunity(image,communityFormDTO);
         user.createCommunity(community);
 
-        // 3. 커뮤니티 저장(+멤버 저장)
+        // 4. 커뮤니티 저장(+멤버 저장)
         communityRepository.save(community);
 
         return ResponseEntity.ok(ApiResponse.onSuccess("커뮤니티가 생성되었습니다."));
@@ -64,19 +69,27 @@ public class CommunityCommandServiceImpl implements CommunityCommandService {
         // 2. 커뮤니티 존재 확인
         Community community = findCommunityById(communityId);
 
-        // 3. 회원이 커뮤니티 주인인지 확인
+        // 3. 커뮤니티 이름 중복 검사
+        communityRepository.findByTitle(communityFormDTO.getTitle()).ifPresent(findCommunity -> {
+            if(!community.getTitle().equals(findCommunity.getTitle()))// 원본 이름을 그대로 유지하는 경우는 상관없음
+                throw new GeneralException(ErrorStatus._DUPLICATE_COMMUNITY_TITLE);
+        });
+
+        // 4. 회원이 커뮤니티 주인인지 확인
         if (!community.getOwner().equals(user)) {
             throw new GeneralException(ErrorStatus._FORBIDDEN);
         }
 
-        // 4. 커뮤니티 값 수정
-        // 4.1. 기존 이미지 삭제
+        // 5. 커뮤니티 값 수정
+        // 5.1. 기존 이미지 삭제
         s3Service.deleteFileByURL(community.getProfileImage());
-        // 4.2. 커뮤니티 정보 변경
+        // 5.2. 커뮤니티 정보 변경
         community.changeCommunityInfo(communityFormDTO);
-        // 4.3. 새로운 이미지 저장
-        if (!image.isEmpty()) {
+        // 5.3. 새로운 이미지 저장
+        if (image!=null&&!image.isEmpty()) { // 이미지가 있을 경우 -> 새롭게 업로드
             community.changeProfileImage(s3Service.uploadFile(image));
+        } else { // 이미지가 없을 경우 -> 기본 이미지
+            community.changeProfileImage(null);
         }
 
         return ResponseEntity.ok(ApiResponse.onSuccess("커뮤니티가 수정되었습니다."));

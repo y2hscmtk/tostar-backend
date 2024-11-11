@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 @Builder
 public class CommunityProfileResponseDTO {
-    private String ownerEmail; // 커뮤니티 주인의 이메일 -> 수정 가능 여부 식별용
+    private Boolean isOwner; // 커뮤니티 주인 여부
     private String ownerPetName; // 커뮤니티 주인의 애완동물 이름
     private String ownerPetProfileImage; // 커뮤니티 주인의 애완동물 이미지 링크
     private Long communityId;
