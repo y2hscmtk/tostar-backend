@@ -13,7 +13,7 @@ public interface CommentService {
     ResponseEntity<?> createComment(Long articleId, CommentRequestDTO commentRequestDTO, String email);
 
     // 댓글 수정
-    CommentRequestDTO updateComment(Long articleId, Long commentId, CommentRequestDTO commentRequestDTO);
+    ResponseEntity<?> updateComment(Long commentId,CommentRequestDTO commentRequestDTO, String email);
 
     // 댓글 삭제
     void deleteComment(Long articleId, Long commentId);

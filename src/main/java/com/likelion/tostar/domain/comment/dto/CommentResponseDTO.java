@@ -9,7 +9,8 @@ import lombok.Data;
 @Builder
 public class CommentResponseDTO {
     private Long commentId; // 댓글 기본키
-    private Long authorId; // 작성자 기본키
+    private String petName;
+    private String profileImage;
     private String content;
     private LocalDateTime updatedAt; // 최종 수정 시간
 }

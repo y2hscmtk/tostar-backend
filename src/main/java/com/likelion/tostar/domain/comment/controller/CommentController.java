@@ -44,12 +44,11 @@ public class CommentController {
      * 댓글 수정
      */
     @PutMapping("/{commentId}")
-    public ResponseEntity<CommentRequestDTO> updateComment(
-            @PathVariable Long articleId,
+    public ResponseEntity<?> updateComment(
             @PathVariable Long commentId,
-            @RequestBody CommentRequestDTO commentRequestDTO) {
-        CommentRequestDTO updatedComment = commentService.updateComment(articleId, commentId, commentRequestDTO);
-        return ResponseEntity.ok(updatedComment);
+            @RequestBody CommentRequestDTO commentRequestDTO,
+            @AuthenticationPrincipal CustomUserDetails customUserDetail) {
+        return commentService.updateComment(commentId, commentRequestDTO, customUserDetail.getEmail());
     }
 
     /**

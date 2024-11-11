@@ -31,12 +31,15 @@ public class Comment extends BaseEntity {
     @Column(nullable = false)
     private String content; // 댓글 내용
 
-    // == 편의 메소드 ==
     public static Comment toEntity(CommentRequestDTO dto, Article article, User author) {
         return Comment.builder()
                 .article(article)
                 .author(author)
                 .content(dto.getContent())
                 .build();
+    }
+
+    public void changeContent(String content) {
+        this.content = content;
     }
 }

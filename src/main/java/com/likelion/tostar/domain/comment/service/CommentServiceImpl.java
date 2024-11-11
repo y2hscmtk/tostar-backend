@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
@@ -33,6 +34,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public List<CommentRequestDTO> getCommentsByArticleId(Long articleId) {
+        // 본인의 댓글인지 확인 가능한 속성도 함께 반환
+
         // 댓글 조회 (findByArticleIdOrderByCreatedAtDesc 메서드 사용)
         List<Comment> comments = commentRepository.findByArticleIdOrderByCreatedAtDesc(articleId);
 
@@ -49,7 +52,6 @@ public class CommentServiceImpl implements CommentService {
      * 댓글 작성
      */
     @Override
-    @Transactional
     public ResponseEntity<?> createComment(Long articleId, CommentRequestDTO commentRequestDTO, String email) {
         // 1. 게시글 존재 여부 확인
         Article article = findArticleById(articleId);
@@ -62,32 +64,29 @@ public class CommentServiceImpl implements CommentService {
         // 5. 반환 DTO 생성 및 반환
         return ResponseEntity.ok(ApiResponse.onSuccess(commentConverter.toCommentResponseDTO(comment)));
     }
+
     /**
      * 댓글 수정
      */
     @Override
-    @Transactional
-    public CommentRequestDTO updateComment(Long articleId, Long commentId, CommentRequestDTO commentRequestDTO) {
-//        // 댓글 조회
-//        Optional<Comment> commentOptional = commentRepository.findById(commentId);
-//        if (commentOptional.isEmpty()) {
-//            throw new IllegalArgumentException("댓글을 찾을 수 없습니다.");
-//        }
-//
-//        Comment comment = commentOptional.get();
-//        comment.setContent(commentDTO.getContent());  // 수정된 내용으로 업데이트
-//
-//        // 수정된 댓글 저장
-//        Comment updatedComment = commentRepository.save(comment);
-
-        return CommentRequestDTO.builder().build();
+    public ResponseEntity<?> updateComment(Long commentId, CommentRequestDTO commentRequestDTO, String email) {
+        // 1. 댓글 존재 여부 확인
+        Comment comment = findCommentById(commentId);
+        // 2. 회원 존재 여부 확인
+        User user = findUserByEmail(email);
+        // 3. 댓글 작성자 - 수정 요청자 동일인 확인
+        if (user != comment.getAuthor()) {
+            throw new GeneralException(ErrorStatus._FORBIDDEN);
+        }
+        // 4. 댓글 수정
+        comment.changeContent(commentRequestDTO.getContent());
+        return ResponseEntity.ok(ApiResponse.onSuccess(commentConverter.toCommentResponseDTO(comment)));
     }
 
     /**
      * 댓글 삭제
      */
     @Override
-    @Transactional
     public void deleteComment(Long articleId, Long commentId) {
         // 댓글 존재 여부 확인
         if (!commentRepository.existsById(commentId)) {
@@ -106,6 +105,11 @@ public class CommentServiceImpl implements CommentService {
     public User findUserByEmail(String email) {
         return userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+    }
+
+    public Comment findCommentById(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException());
     }
 
 }
