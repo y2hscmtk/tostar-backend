@@ -32,7 +32,7 @@ public class CommentQueryServiceImpl implements CommentQueryService {
         // 1. 게시글 조회
         Article article = findArticleById(articleId);
         // 2. 게시글 관련 댓글 조회
-        List<Comment> comments = commentRepository.findByArticleOrderByCreatedAtDesc(article);
+        List<Comment> comments = commentRepository.findCommentByArticle(article);
         // 3. 반환 DTO 작성
         ArrayList<CommentResponseDTO> responseDTOArrayList = new ArrayList<>();
         for (Comment comment : comments) {

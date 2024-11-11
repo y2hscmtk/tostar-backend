@@ -33,16 +33,15 @@ public class CommentCommandServiceImpl implements CommentCommandService {
      * 댓글 작성
      */
     @Override
+    @Transactional
     public ResponseEntity<?> createComment(Long articleId, CommentRequestDTO commentRequestDTO, String email) {
         // 1. 게시글 존재 여부 확인
         Article article = findArticleById(articleId);
         // 2. 회원 존재 여부 확인
         User user = findUserByEmail(email);
-        // 3. 댓글 엔티티 생성
-        Comment comment = Comment.toEntity(commentRequestDTO, article, user);
-        // 4. 댓글 저장
-        commentRepository.save(comment);
-        // 5. 반환 DTO 생성 및 반환
+        // 3. 댓글 엔티티 생성 및 저장
+        Comment comment = commentRepository.save(Comment.toEntity(commentRequestDTO, article, user));
+        // 4. 반환 DTO 생성 및 반환
         return ResponseEntity.ok(ApiResponse.onSuccess(commentConverter.toCommentResponseDTO(comment)));
     }
 

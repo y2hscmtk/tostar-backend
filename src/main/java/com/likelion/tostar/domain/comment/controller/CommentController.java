@@ -29,9 +29,9 @@ public class CommentController {
     /**
      * 댓글 작성
      */
-    @PostMapping("{commentId}")
+    @PostMapping("{articleId}")
     public ResponseEntity<?> createComment(
-            @PathVariable("commentId") Long articleId,
+            @PathVariable("articleId") Long articleId,
             @RequestBody CommentRequestDTO commentRequestDTO,
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return commentService.createComment(articleId, commentRequestDTO, customUserDetails.getEmail());
