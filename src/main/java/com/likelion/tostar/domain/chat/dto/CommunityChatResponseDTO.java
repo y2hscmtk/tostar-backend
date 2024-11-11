@@ -11,6 +11,7 @@ import lombok.Data;
 @Builder
 public class CommunityChatResponseDTO {
     private String email; // 송신자 정보
+    private String petName; // 송신자 애완동물 이름
     private MessageType messageType;
     private String profileImage;
     private String content;
