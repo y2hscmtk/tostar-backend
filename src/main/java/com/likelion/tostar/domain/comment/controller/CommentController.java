@@ -32,9 +32,9 @@ public class CommentController {
     /**
      * 댓글 작성
      */
-    @PostMapping
+    @PostMapping("{commentId}")
     public ResponseEntity<?> createComment(
-            @PathVariable Long articleId,
+            @PathVariable("commentId") Long articleId,
             @RequestBody CommentRequestDTO commentRequestDTO,
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         return commentService.createComment(articleId, commentRequestDTO, customUserDetails.getEmail());
@@ -45,7 +45,7 @@ public class CommentController {
      */
     @PutMapping("/{commentId}")
     public ResponseEntity<?> updateComment(
-            @PathVariable Long commentId,
+            @PathVariable("commentId") Long commentId,
             @RequestBody CommentRequestDTO commentRequestDTO,
             @AuthenticationPrincipal CustomUserDetails customUserDetail) {
         return commentService.updateComment(commentId, commentRequestDTO, customUserDetail.getEmail());
@@ -55,8 +55,9 @@ public class CommentController {
      * 댓글 삭제
      */
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<String> deleteComment(@PathVariable Long articleId, @PathVariable Long commentId) {
-        commentService.deleteComment(articleId, commentId);
-        return ResponseEntity.ok("댓글이 삭제되었습니다.");
+    public ResponseEntity<?> deleteComment(
+            @PathVariable("commentId") Long commentId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetail) {
+        return commentService.deleteComment(commentId, customUserDetail.getEmail());
     }
 }

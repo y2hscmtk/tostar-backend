@@ -16,5 +16,5 @@ public interface CommentService {
     ResponseEntity<?> updateComment(Long commentId,CommentRequestDTO commentRequestDTO, String email);
 
     // 댓글 삭제
-    void deleteComment(Long articleId, Long commentId);
+    ResponseEntity<?> deleteComment(Long commentId, String email);
 }

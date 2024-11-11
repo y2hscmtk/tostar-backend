@@ -87,14 +87,18 @@ public class CommentServiceImpl implements CommentService {
      * 댓글 삭제
      */
     @Override
-    public void deleteComment(Long articleId, Long commentId) {
-        // 댓글 존재 여부 확인
-        if (!commentRepository.existsById(commentId)) {
-            throw new IllegalArgumentException("댓글을 찾을 수 없습니다.");
+    public ResponseEntity<?> deleteComment(Long commentId, String email) {
+        // 1. 댓글 존재 여부 확인
+        Comment comment = findCommentById(commentId);
+        // 2. 사용자 존재 여부 확인
+        User user = findUserByEmail(email);
+        // 3. 댓글 작성자 - 삭제 요청자 동일 인물 확인
+        if (user != comment.getAuthor()) {
+            throw new GeneralException(ErrorStatus._FORBIDDEN);
         }
-
-        // 댓글 삭제
-        commentRepository.deleteById(commentId);
+        // 4. 삭제
+        commentRepository.delete(comment);
+        return ResponseEntity.ok(ApiResponse.onSuccess("댓글이 삭제되었습니다."));
     }
 
     public Article findArticleById(Long articleId) {
