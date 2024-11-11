@@ -32,6 +32,9 @@ public enum ErrorStatus implements BaseCode {
 	_NOT_OWNER_OF_ARTICLE(HttpStatus.FORBIDDEN, "ARTICLE4031", "해당 추억(게시글)의 주인이 아닙니다."),
 	_ARTICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "ARTICLE4041", "해당 추억을 찾을 수 없습니다."),
 
+	// Comment
+	_COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT4001", "이미 삭제되었거나 존재하지 않는 댓글입니다."),
+
 
 	// Letter Error
 	_LETTER_CONTENT_MISSING(HttpStatus.BAD_REQUEST, "LETTER4001", "편지 내용을 입력해 주세요."),

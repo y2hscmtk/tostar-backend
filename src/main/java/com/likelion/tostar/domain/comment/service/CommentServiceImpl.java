@@ -103,7 +103,7 @@ public class CommentServiceImpl implements CommentService {
 
     public Article findArticleById(Long articleId) {
         return articleRepository.findById(articleId)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new GeneralException(ErrorStatus._ARTICLE_NOT_FOUND));
     }
 
     public User findUserByEmail(String email) {
@@ -113,7 +113,7 @@ public class CommentServiceImpl implements CommentService {
 
     public Comment findCommentById(Long commentId) {
         return commentRepository.findById(commentId)
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new GeneralException(ErrorStatus._COMMENT_NOT_FOUND));
     }
 
 }
