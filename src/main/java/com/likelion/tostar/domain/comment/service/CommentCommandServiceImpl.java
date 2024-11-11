@@ -22,31 +22,12 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class CommentServiceImpl implements CommentService {
+public class CommentCommandServiceImpl implements CommentCommandService {
     private final CommentRepository commentRepository;
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
     private final CommentConverter commentConverter;
 
-    /**
-     * 특정 게시글의 댓글 최신순 조회
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public List<CommentRequestDTO> getCommentsByArticleId(Long articleId) {
-        // 본인의 댓글인지 확인 가능한 속성도 함께 반환
-
-        // 댓글 조회 (findByArticleIdOrderByCreatedAtDesc 메서드 사용)
-        List<Comment> comments = commentRepository.findByArticleIdOrderByCreatedAtDesc(articleId);
-
-        ArrayList<CommentRequestDTO> commentRequestDTOS = new ArrayList<>();
-        // 댓글 엔티티를 DTO로 변환하여 반환
-//        return comments.stream()
-//                .map(comment -> new CommentDTO(comment.getId(),
-//                        comment.getArticleId(), comment.getUserId(), comment.getContent()))
-//                .collect(Collectors.toList());
-        return commentRequestDTOS;
-    }
 
     /**
      * 댓글 작성

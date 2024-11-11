@@ -4,11 +4,10 @@ import com.likelion.tostar.domain.comment.dto.CommentRequestDTO;
 
 import java.util.List;
 import org.springframework.http.ResponseEntity;
-
-public interface CommentService {
-    // 댓글 조회
-    List<CommentRequestDTO> getCommentsByArticleId(Long articleId);
-
+/**
+ * GET 이외의 요청은 여기에 작성
+ */
+public interface CommentCommandService {
     // 댓글 작성
     ResponseEntity<?> createComment(Long articleId, CommentRequestDTO commentRequestDTO, String email);
 
