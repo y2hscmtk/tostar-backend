@@ -9,5 +9,5 @@ import org.springframework.http.ResponseEntity;
  */
 public interface CommentQueryService {
     // 댓글 조회
-    List<CommentRequestDTO> getCommentsByArticleId(Long articleId);
+    ResponseEntity<?> getCommentsByArticleId(Long articleId);
 }
