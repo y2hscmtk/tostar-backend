@@ -1,6 +1,6 @@
 package com.likelion.tostar.domain.comment.controller;
 
-import com.likelion.tostar.domain.comment.dto.CommentDTO;
+import com.likelion.tostar.domain.comment.dto.CommentRequestDTO;
 import com.likelion.tostar.domain.comment.service.CommentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +21,8 @@ public class CommentController {
      * 특정 게시글에 대한 댓글들을 최신순으로 조회
      */
     @GetMapping
-    public ResponseEntity<List<CommentDTO>> getComments(@PathVariable Long articleId) {
-        List<CommentDTO> comments = commentService.getCommentsByArticleId(articleId);
+    public ResponseEntity<List<CommentRequestDTO>> getComments(@PathVariable Long articleId) {
+        List<CommentRequestDTO> comments = commentService.getCommentsByArticleId(articleId);
         return ResponseEntity.ok(comments);
     }
 
@@ -30,10 +30,10 @@ public class CommentController {
      * 댓글 작성
      */
     @PostMapping
-    public ResponseEntity<CommentDTO> createComment(
+    public ResponseEntity<CommentRequestDTO> createComment(
             @PathVariable Long articleId,
-            @RequestBody CommentDTO commentDTO) {
-        CommentDTO createdComment = commentService.createComment(articleId, commentDTO);
+            @RequestBody CommentRequestDTO commentRequestDTO) {
+        CommentRequestDTO createdComment = commentService.createComment(articleId, commentRequestDTO);
         return ResponseEntity.status(201).body(createdComment);
     }
 
@@ -41,11 +41,11 @@ public class CommentController {
      * 댓글 수정
      */
     @PutMapping("/{commentId}")
-    public ResponseEntity<CommentDTO> updateComment(
+    public ResponseEntity<CommentRequestDTO> updateComment(
             @PathVariable Long articleId,
             @PathVariable Long commentId,
-            @RequestBody CommentDTO commentDTO) {
-        CommentDTO updatedComment = commentService.updateComment(articleId, commentId, commentDTO);
+            @RequestBody CommentRequestDTO commentRequestDTO) {
+        CommentRequestDTO updatedComment = commentService.updateComment(articleId, commentId, commentRequestDTO);
         return ResponseEntity.ok(updatedComment);
     }
 

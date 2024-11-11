@@ -2,7 +2,7 @@ package com.likelion.tostar.domain.comment.service;
 
 import com.likelion.tostar.domain.articles.entity.Article;
 import com.likelion.tostar.domain.articles.repository.ArticleRepository;
-import com.likelion.tostar.domain.comment.dto.CommentDTO;
+import com.likelion.tostar.domain.comment.dto.CommentRequestDTO;
 import com.likelion.tostar.domain.comment.entity.Comment;
 import com.likelion.tostar.domain.comment.repository.CommentRepository;
 import com.likelion.tostar.domain.user.repository.UserRepository;
@@ -25,17 +25,17 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<CommentDTO> getCommentsByArticleId(Long articleId) {
+    public List<CommentRequestDTO> getCommentsByArticleId(Long articleId) {
         // 댓글 조회 (findByArticleIdOrderByCreatedAtDesc 메서드 사용)
         List<Comment> comments = commentRepository.findByArticleIdOrderByCreatedAtDesc(articleId);
 
-        ArrayList<CommentDTO> commentDTOS = new ArrayList<>();
+        ArrayList<CommentRequestDTO> commentRequestDTOS = new ArrayList<>();
         // 댓글 엔티티를 DTO로 변환하여 반환
 //        return comments.stream()
 //                .map(comment -> new CommentDTO(comment.getId(),
 //                        comment.getArticleId(), comment.getUserId(), comment.getContent()))
 //                .collect(Collectors.toList());
-        return commentDTOS;
+        return commentRequestDTOS;
     }
 
     /**
@@ -43,7 +43,7 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     @Transactional
-    public CommentDTO createComment(Long articleId, CommentDTO commentDTO) {
+    public CommentRequestDTO createComment(Long articleId, CommentRequestDTO commentRequestDTO) {
         Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new RuntimeException());
 //
@@ -59,15 +59,14 @@ public class CommentServiceImpl implements CommentService {
 //        Comment savedComment = commentRepository.save(comment);
 
         // 저장된 댓글 반환
-        return new CommentDTO();
+        return CommentRequestDTO.builder().build();
     }
-
     /**
      * 댓글 수정
      */
     @Override
     @Transactional
-    public CommentDTO updateComment(Long articleId, Long commentId, CommentDTO commentDTO) {
+    public CommentRequestDTO updateComment(Long articleId, Long commentId, CommentRequestDTO commentRequestDTO) {
 //        // 댓글 조회
 //        Optional<Comment> commentOptional = commentRepository.findById(commentId);
 //        if (commentOptional.isEmpty()) {
@@ -80,7 +79,7 @@ public class CommentServiceImpl implements CommentService {
 //        // 수정된 댓글 저장
 //        Comment updatedComment = commentRepository.save(comment);
 
-        return new CommentDTO();
+        return CommentRequestDTO.builder().build();
     }
 
     /**
