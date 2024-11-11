@@ -2,12 +2,18 @@ package com.likelion.tostar.domain.comment.service;
 
 import com.likelion.tostar.domain.articles.entity.Article;
 import com.likelion.tostar.domain.articles.repository.ArticleRepository;
+import com.likelion.tostar.domain.comment.converter.CommentConverter;
 import com.likelion.tostar.domain.comment.dto.CommentRequestDTO;
 import com.likelion.tostar.domain.comment.entity.Comment;
 import com.likelion.tostar.domain.comment.repository.CommentRepository;
+import com.likelion.tostar.domain.user.entity.User;
 import com.likelion.tostar.domain.user.repository.UserRepository;
+import com.likelion.tostar.global.enums.statuscode.ErrorStatus;
+import com.likelion.tostar.global.exception.GeneralException;
+import com.likelion.tostar.global.response.ApiResponse;
 import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +25,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
+    private final CommentConverter commentConverter;
 
     /**
      * 특정 게시글의 댓글 최신순 조회
@@ -43,23 +50,17 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     @Transactional
-    public CommentRequestDTO createComment(Long articleId, CommentRequestDTO commentRequestDTO) {
-        Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new RuntimeException());
-//
-//        // 댓글 엔티티 생성 및 정보 설정
-//        Comment.builder()
-//                .article(article)
-//
-//
-//        comment.setUserId(commentDTO.getUserId());
-//        comment.setContent(commentDTO.getContent());
-//
-//        // 댓글 저장
-//        Comment savedComment = commentRepository.save(comment);
-
-        // 저장된 댓글 반환
-        return CommentRequestDTO.builder().build();
+    public ResponseEntity<?> createComment(Long articleId, CommentRequestDTO commentRequestDTO, String email) {
+        // 1. 게시글 존재 여부 확인
+        Article article = findArticleById(articleId);
+        // 2. 회원 존재 여부 확인
+        User user = findUserByEmail(email);
+        // 3. 댓글 엔티티 생성
+        Comment comment = Comment.toEntity(commentRequestDTO, article, user);
+        // 4. 댓글 저장
+        commentRepository.save(comment);
+        // 5. 반환 DTO 생성 및 반환
+        return ResponseEntity.ok(ApiResponse.onSuccess(commentConverter.toCommentResponseDTO(comment)));
     }
     /**
      * 댓글 수정
@@ -96,4 +97,15 @@ public class CommentServiceImpl implements CommentService {
         // 댓글 삭제
         commentRepository.deleteById(commentId);
     }
+
+    public Article findArticleById(Long articleId) {
+        return articleRepository.findById(articleId)
+                .orElseThrow(() -> new RuntimeException());
+    }
+
+    public User findUserByEmail(String email) {
+        return userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+    }
+
 }

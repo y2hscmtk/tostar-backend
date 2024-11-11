@@ -2,7 +2,10 @@ package com.likelion.tostar.domain.comment.controller;
 
 import com.likelion.tostar.domain.comment.dto.CommentRequestDTO;
 import com.likelion.tostar.domain.comment.service.CommentService;
+import com.likelion.tostar.global.jwt.dto.CustomUserDetails;
+import com.likelion.tostar.global.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,11 +33,11 @@ public class CommentController {
      * 댓글 작성
      */
     @PostMapping
-    public ResponseEntity<CommentRequestDTO> createComment(
+    public ResponseEntity<?> createComment(
             @PathVariable Long articleId,
-            @RequestBody CommentRequestDTO commentRequestDTO) {
-        CommentRequestDTO createdComment = commentService.createComment(articleId, commentRequestDTO);
-        return ResponseEntity.status(201).body(createdComment);
+            @RequestBody CommentRequestDTO commentRequestDTO,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return commentService.createComment(articleId, commentRequestDTO, customUserDetails.getEmail());
     }
 
     /**
