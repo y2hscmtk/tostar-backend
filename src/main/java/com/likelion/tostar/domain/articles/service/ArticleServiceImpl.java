@@ -167,20 +167,12 @@ public class ArticleServiceImpl implements ArticleService {
         // 페이지 처리
         PageRequest pageRequest = PageRequest.of(page, size); // page, size 설정
 
-        // 추억 조회할 때 제외해야할 List 생성
-        //       1. 친구 목록 가져오기
-        List<Long> friendIds = friendRepository.findFriendsByUserId(userId);
-        //       2. 나 추가하기
-        friendIds.add(userId); // 자기 자신을 제외하려면 추가해야 합니다.
-
-
-        // DB 검색 - 나와 친구를 제외한 추억 조회 (최신순)
-        Page<Article> articlePage = articleRepository.findArticlesExcludingUsers(friendIds, pageRequest);
+        // DB 검색 - searchId의 게시글 조회(최신순)
+        Page<Article> articlePage = articleRepository.findAllByUserId(searchId, pageRequest);
 
         // 게시글 정보 빌드 (response.result)
         List<ArticleSearchListResponseDto> responseDtos = new ArrayList<>();
         for (Article article : articlePage.getContent()) {
-            // article을 가지고 ArticleSearchListResponseDto 빌드
             ArticleSearchListResponseDto responseDto = buildArticleResponse(article, userId);
             responseDtos.add(responseDto);
         }
@@ -189,6 +181,7 @@ public class ArticleServiceImpl implements ArticleService {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.onSuccess(responseDtos));
     }
+
 
     @Override
     public ResponseEntity<?> getArticlesWithoutFriends(Long userId, int page, int size) {

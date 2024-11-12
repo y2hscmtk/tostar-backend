@@ -13,12 +13,9 @@ import java.util.List;
 @Repository
 public interface ArticleRepository extends JpaRepository<Article,Long> {
     // 회원 ID로 게시글 조회
-    @Query("SELECT a FROM Article a WHERE a.memberId = :userId ORDER BY a.createdAt DESC")
-    Page<Article> findAllByUserId(Long userId, Pageable pageable);
+    @Query("SELECT a FROM Article a WHERE a.user.id = :userId ORDER BY a.createdAt DESC")
+    Page<Article> findAllByUserId(@Param("userId") Long userId, Pageable pageable);
 
-    // 나/친구들을 제외한 다른 회원들 게시글 조회
-    @Query("SELECT a FROM Article a WHERE a.userId NOT IN :userIds ORDER BY a.createdAt DESC")
+    @Query("SELECT a FROM Article a WHERE a.user.id NOT IN :userIds ORDER BY a.createdAt DESC")
     Page<Article> findArticlesExcludingUsers(@Param("userIds") List<Long> userIds, Pageable pageable);
-
-
 }
