@@ -1,6 +1,7 @@
 package com.likelion.tostar.domain.articles.service;
 
 import com.likelion.tostar.domain.articles.dto.ArticleCreateModifyRequestDto;
+import com.likelion.tostar.global.jwt.dto.CustomUserDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,4 +16,8 @@ public interface ArticleService {
 
     // 추억 삭제
     ResponseEntity<?> deleteArticle(Long articleId, Long userId);
+
+    // 특정 사용자의 추억 조회
+    ResponseEntity<?> getArticlesByUserId(CustomUserDetails customUserDetails, Long userId, int page, int size);
+
 }

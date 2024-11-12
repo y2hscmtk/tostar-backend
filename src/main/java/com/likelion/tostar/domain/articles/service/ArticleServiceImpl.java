@@ -9,6 +9,7 @@ import com.likelion.tostar.domain.articles.repository.ArticleRepository;
 import com.likelion.tostar.domain.user.entity.User;
 import com.likelion.tostar.domain.user.repository.UserRepository;
 import com.likelion.tostar.global.exception.GeneralException;
+import com.likelion.tostar.global.jwt.dto.CustomUserDetails;
 import com.likelion.tostar.global.response.ApiResponse;
 import com.likelion.tostar.global.enums.statuscode.ErrorStatus;
 import com.likelion.tostar.global.s3.service.S3Service;
@@ -21,6 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -146,7 +149,22 @@ public class ArticleServiceImpl implements ArticleService {
                 .body(ApiResponse.onSuccess("추억 삭제에 성공했습니다."));
     }
 
-    // ========================= 편의 메서드 ==========================
+
+    /**
+     * 특정 사용자의 게시글을 최신순으로 조회
+     */
+    @Override
+    public ResponseEntity<?> getArticlesByUserId(CustomUserDetails customUserDetails, Long userId, int page, int size) {
+        List<Article> articles = articleRepository.findAllByUserId(userId);
+        return articles.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+
+
+
+    // ============================ 편의 메서드 =============================
 
     // 추억의 기존 이미지 삭제 메서드
     private void deleteExistingImages(Article article) {
@@ -195,4 +213,6 @@ public class ArticleServiceImpl implements ArticleService {
 
         return ResponseEntity.status(200).body(ApiResponse.onSuccess(responseDto));
     }
+
+
 }
