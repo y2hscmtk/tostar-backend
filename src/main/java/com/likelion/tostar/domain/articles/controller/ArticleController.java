@@ -65,14 +65,14 @@ public class ArticleController {
     }
 
     /**
-     * 여러 사용자들의 추억 조회
+     * 특정 사용자들을 제외한 추억 조회
      */
-    @GetMapping("/others")
-    public ResponseEntity<List<ArticleDTO>> getOtherArticles(
-            @RequestParam Long userId,
-            @RequestParam int page,
-            @RequestParam int size) {
-        List<ArticleDTO> articles = articleService.getOtherArticles(userId, page, size);
-        return ResponseEntity.ok(articles);
+    @GetMapping("/others}")
+    public ResponseEntity<?> getArticlesWithoutFriends(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam(value = "page", defaultValue = "0")int page,
+            @RequestParam(value = "size", defaultValue = "4")int size) {
+        return articleService.getArticlesWithoutFriends(customUserDetails.getId(), page, size);
+
     }
 }

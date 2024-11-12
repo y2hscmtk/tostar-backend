@@ -20,4 +20,6 @@ public interface ArticleService {
     // 특정 사용자의 추억 조회
     ResponseEntity<?> getArticlesByUserId(Long userId, Long searchId, int page, int size);
 
+    // 특정 사용자들을 제외한 추억 조회
+    ResponseEntity<?> getArticlesWithoutFriends(Long userId, int page, int size);
 }

@@ -7,6 +7,8 @@ import com.likelion.tostar.domain.articles.dto.ArticleSearchListResponseDto;
 import com.likelion.tostar.domain.articles.entity.Article;
 import com.likelion.tostar.domain.articles.entity.ArticleImage;
 import com.likelion.tostar.domain.articles.repository.ArticleRepository;
+import com.likelion.tostar.domain.relationship.entity.Relationship;
+import com.likelion.tostar.domain.relationship.repository.RelationshipRepository;
 import com.likelion.tostar.domain.user.entity.User;
 import com.likelion.tostar.domain.user.repository.UserRepository;
 import com.likelion.tostar.global.exception.GeneralException;
@@ -33,6 +35,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
+    private final RelationshipRepository relationshipRepository;
     private final S3Service s3Service;
 
     /**
@@ -164,8 +167,15 @@ public class ArticleServiceImpl implements ArticleService {
         // 페이지 처리
         PageRequest pageRequest = PageRequest.of(page, size); // page, size 설정
 
-        // DB 검색 - searchId의 게시글 조회(최신순)
-        Page<Article> articlePage = articleRepository.findAllByUserId(searchId, pageRequest);
+        // 추억 조회할 때 제외해야할 List 생성
+        //       1. 친구 목록 가져오기
+        List<Long> friendIds = friendRepository.findFriendsByUserId(userId);
+        //       2. 나 추가하기
+        friendIds.add(userId); // 자기 자신을 제외하려면 추가해야 합니다.
+
+
+        // DB 검색 - 나와 친구를 제외한 추억 조회 (최신순)
+        Page<Article> articlePage = articleRepository.findArticlesExcludingUsers(friendIds, pageRequest);
 
         // 게시글 정보 빌드 (response.result)
         List<ArticleSearchListResponseDto> responseDtos = new ArrayList<>();
@@ -180,8 +190,34 @@ public class ArticleServiceImpl implements ArticleService {
                 .body(ApiResponse.onSuccess(responseDtos));
     }
 
+    @Override
+    public ResponseEntity<?> getArticlesWithoutFriends(Long userId, int page, int size) {
+        // 404 : 토큰에 해당하는 회원이 실제로 존재하는지 확인
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
+        // 검색에서 제외할 목록의 Id 리스트 생성
+        List<Long> excludingIds = new ArrayList<>();
+        excludingIds = getFriendIds(userId); // 친구 제외
+        excludingIds.add(userId); // 자기 자신도 제외
 
+        // 페이지 처리
+        PageRequest pageRequest = PageRequest.of(page, size);
+
+        // DB 검색 - 나와 친구를 제외한 게시글 조회 (최신순)
+        Page<Article> articlePage = articleRepository.findArticlesExcludingUsers(excludingIds, pageRequest);
+
+        // 게시글 정보 빌드 (response.result)
+        List<ArticleSearchListResponseDto> responseDtos = new ArrayList<>();
+        for (Article article : articlePage.getContent()) {
+            // article을 가지고 ArticleSearchListResponseDto 빌드
+            ArticleSearchListResponseDto responseDto = buildArticleResponse(article, userId);
+            responseDtos.add(responseDto);
+        }
+
+        // 응답 반환
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.onSuccess(responseDtos));    }
 
 
     // ============================ 편의 메서드 =============================
@@ -269,6 +305,23 @@ public class ArticleServiceImpl implements ArticleService {
                 .isOwner(article.getUser().getId().equals(userId))
                 .build();
     }
+
+    // 친구 목록(id) 가져오는 메서드
+    public List<Long> getFriendIds(Long userId) {
+        List<Relationship> relationships = relationshipRepository.findAllByUserId(userId);
+        List<Long> friendIds = new ArrayList<>();
+
+        // user1, user2 관계에서 친구들의 ID 추출
+        for (Relationship relationship : relationships) {
+            if (relationship.getUser1().getId().equals(userId)) {
+                friendIds.add(relationship.getUser2().getId());
+            } else {
+                friendIds.add(relationship.getUser1().getId());
+            }
+        }
+        return friendIds;
+    }
+
 
 
 }
