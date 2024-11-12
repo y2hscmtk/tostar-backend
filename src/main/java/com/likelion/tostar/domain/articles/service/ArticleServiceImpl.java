@@ -3,17 +3,20 @@ package com.likelion.tostar.domain.articles.service;
 import com.likelion.tostar.domain.articles.dto.ArticleCreateModifyRequestDto;
 import com.likelion.tostar.domain.articles.dto.ArticlePostResponseDto;
 import com.likelion.tostar.domain.articles.dto.ArticlePostResponseDto.ImageResponseDto;
+import com.likelion.tostar.domain.articles.dto.ArticleSearchListResponseDto;
 import com.likelion.tostar.domain.articles.entity.Article;
 import com.likelion.tostar.domain.articles.entity.ArticleImage;
 import com.likelion.tostar.domain.articles.repository.ArticleRepository;
 import com.likelion.tostar.domain.user.entity.User;
 import com.likelion.tostar.domain.user.repository.UserRepository;
 import com.likelion.tostar.global.exception.GeneralException;
-import com.likelion.tostar.global.jwt.dto.CustomUserDetails;
 import com.likelion.tostar.global.response.ApiResponse;
 import com.likelion.tostar.global.enums.statuscode.ErrorStatus;
 import com.likelion.tostar.global.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -145,7 +147,7 @@ public class ArticleServiceImpl implements ArticleService {
         articleRepository.delete(article);
 
         // 200 : 추억 삭제 성공
-        return ResponseEntity.status(200)
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.onSuccess("추억 삭제에 성공했습니다."));
     }
 
@@ -154,17 +156,30 @@ public class ArticleServiceImpl implements ArticleService {
      * 특정 사용자의 게시글을 최신순으로 조회
      */
     @Override
-    public ResponseEntity<?> getArticlesByUserId(CustomUserDetails customUserDetails, Long userId, int page, int size) {
+    public ResponseEntity<?> getArticlesByUserId(Long userId, Long searchId, int page, int size) {
         // 404 : 토큰에 해당하는 회원이 실제로 존재하는지 확인
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
+        // 페이지 처리
+        PageRequest pageRequest = PageRequest.of(page, size); // page, size 설정
 
-        List<Article> articles = articleRepository.findAllByUserId(userId);
-        return articles.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+        // DB 검색 - searchId의 게시글 조회(최신순)
+        Page<Article> articlePage = articleRepository.findAllByUserId(searchId, pageRequest);
+
+        // 게시글 정보 빌드 (response.result)
+        List<ArticleSearchListResponseDto> responseDtos = new ArrayList<>();
+        for (Article article : articlePage.getContent()) {
+            // article을 가지고 ArticleSearchListResponseDto 빌드
+            ArticleSearchListResponseDto responseDto = buildArticleResponse(article, userId);
+            responseDtos.add(responseDto);
+        }
+
+        // 응답 반환
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.onSuccess(responseDtos));
     }
+
 
 
 
@@ -217,6 +232,42 @@ public class ArticleServiceImpl implements ArticleService {
                 .build();
 
         return ResponseEntity.status(200).body(ApiResponse.onSuccess(responseDto));
+    }
+
+    // article 가지고 ArticleSearchListResponseDto 빌드해주는 메서드
+    private ArticleSearchListResponseDto buildArticleResponse(Article article, Long userId) {
+        // 작성자 정보 빌드 - author
+        User author = article.getUser();
+        ArticleSearchListResponseDto.AuthorDto authorDto = ArticleSearchListResponseDto.AuthorDto.builder()
+                .userId(author.getId())
+                .profileImage(author.getProfileImage())
+                .petName(author.getPetName())
+                .category(author.getCategory())
+                .birthDay(author.getBirthday().toString())
+                .starDay(author.getStarDay().toString())
+                .build();
+
+        // 이미지 리스트 빌드 - images
+        List<ArticleSearchListResponseDto.ImageDto> imageDtos = new ArrayList<>();
+        for (ArticleImage image : article.getImages()) {
+            ArticleSearchListResponseDto.ImageDto imageDto = ArticleSearchListResponseDto.ImageDto.builder()
+                    .imageId(image.getId())
+                    .url(image.getUrl())
+                    .build();
+            imageDtos.add(imageDto);
+        }
+
+        // ArticleSearchListResponseDto 빌드
+        return ArticleSearchListResponseDto.builder()
+                .articleId(article.getId())
+                .title(article.getTitle())
+                .content(article.getContent())
+                .createdAt(article.getCreatedAt().toString())
+                .updatedAt(article.getUpdatedAt().toString())
+                .author(authorDto)
+                .images(imageDtos)
+                .isOwner(article.getUser().getId().equals(userId))
+                .build();
     }
 
 

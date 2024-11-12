@@ -54,13 +54,13 @@ public class ArticleController {
     /**
      * 특정 사용자의 추억 조회
      */
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user/{searchId}")
     public ResponseEntity<?> getArticlesByUserId(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @PathVariable Long userId,
+            @PathVariable Long searchId,
             @RequestParam(value = "page", defaultValue = "0")int page,
             @RequestParam(value = "size", defaultValue = "4")int size) {
-        return articleService.getArticlesByUserId(customUserDetails, userId, page, size);
+        return articleService.getArticlesByUserId(customUserDetails.getId(), searchId, page, size);
 
     }
 

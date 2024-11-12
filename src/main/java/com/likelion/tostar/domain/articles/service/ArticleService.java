@@ -18,6 +18,6 @@ public interface ArticleService {
     ResponseEntity<?> deleteArticle(Long articleId, Long userId);
 
     // 특정 사용자의 추억 조회
-    ResponseEntity<?> getArticlesByUserId(CustomUserDetails customUserDetails, Long userId, int page, int size);
+    ResponseEntity<?> getArticlesByUserId(Long userId, Long searchId, int page, int size);
 
 }
