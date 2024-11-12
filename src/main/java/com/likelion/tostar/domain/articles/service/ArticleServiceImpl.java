@@ -155,6 +155,11 @@ public class ArticleServiceImpl implements ArticleService {
      */
     @Override
     public ResponseEntity<?> getArticlesByUserId(CustomUserDetails customUserDetails, Long userId, int page, int size) {
+        // 404 : 토큰에 해당하는 회원이 실제로 존재하는지 확인
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+
+
         List<Article> articles = articleRepository.findAllByUserId(userId);
         return articles.stream()
                 .map(this::convertToDto)
