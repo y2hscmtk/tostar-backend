@@ -190,9 +190,10 @@ public class ArticleServiceImpl implements ArticleService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
         // 검색에서 제외할 목록의 Id 리스트 생성
-        List<Long> excludingIds = new ArrayList<>();
-        excludingIds = getFriendIds(userId); // 친구 제외
+        List<Long> excludingIds = getFriendIds(userId); // 친구 제외
+        System.out.println("excludingIds: "+excludingIds);
         excludingIds.add(userId); // 자기 자신도 제외
+        System.out.println("excludingIds: "+excludingIds);
 
         // 페이지 처리
         PageRequest pageRequest = PageRequest.of(page, size);

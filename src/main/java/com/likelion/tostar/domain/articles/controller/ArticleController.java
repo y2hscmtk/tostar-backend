@@ -67,7 +67,7 @@ public class ArticleController {
     /**
      * 특정 사용자들을 제외한 추억 조회
      */
-    @GetMapping("/others}")
+    @GetMapping("/others")
     public ResponseEntity<?> getArticlesWithoutFriends(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam(value = "page", defaultValue = "0")int page,
