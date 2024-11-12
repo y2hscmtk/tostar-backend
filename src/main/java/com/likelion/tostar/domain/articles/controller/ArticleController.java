@@ -50,4 +50,29 @@ public class ArticleController {
             @PathVariable("articleId") Long articleId) {
         return articleService.deleteArticle(articleId, customUserDetails.getId());
     }
+
+    /**
+     * 특정 사용자의 추억 조회
+     */
+    @GetMapping("/user/{searchId}")
+    public ResponseEntity<?> getArticlesByUserId(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable Long searchId,
+            @RequestParam(value = "page", defaultValue = "0")int page,
+            @RequestParam(value = "size", defaultValue = "4")int size) {
+        return articleService.getArticlesByUserId(customUserDetails.getId(), searchId, page, size);
+
+    }
+
+    /**
+     * 특정 사용자들을 제외한 추억 조회
+     */
+    @GetMapping("/others")
+    public ResponseEntity<?> getArticlesWithoutFriends(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam(value = "page", defaultValue = "0")int page,
+            @RequestParam(value = "size", defaultValue = "4")int size) {
+        return articleService.getArticlesWithoutFriends(customUserDetails.getId(), page, size);
+
+    }
 }
