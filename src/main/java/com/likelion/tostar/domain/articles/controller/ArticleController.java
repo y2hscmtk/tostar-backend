@@ -52,7 +52,18 @@ public class ArticleController {
     }
 
     /**
-     * 특정 친구의 추억 조회
+     * 나의 추억 조회 (최신순)
+     */
+    @GetMapping("/user")
+    public ResponseEntity<?> getArticlesByUserId(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam(value = "page", defaultValue = "0")int page,
+            @RequestParam(value = "size", defaultValue = "4")int size) {
+        return articleService.getUserArticles(customUserDetails.getId(), page, size);
+    }
+
+    /**
+     * 특정 친구의 추억 조회 (최신순)
      */
     @GetMapping("/user/{searchId}")
     public ResponseEntity<?> getArticlesByUserId(
@@ -61,17 +72,6 @@ public class ArticleController {
             @RequestParam(value = "page", defaultValue = "0")int page,
             @RequestParam(value = "size", defaultValue = "4")int size) {
         return articleService.getFriendsArticlesByUserId(customUserDetails.getId(), searchId, page, size);
-    }
-
-    /**
-     * 나의 추억 조회
-     */
-    @GetMapping("/user")
-    public ResponseEntity<?> getArticlesByUserId(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam(value = "page", defaultValue = "0")int page,
-            @RequestParam(value = "size", defaultValue = "4")int size) {
-        return articleService.getUserArticles(customUserDetails.getId(), page, size);
     }
 
     /**
