@@ -154,12 +154,39 @@ public class ArticleServiceImpl implements ArticleService {
                 .body(ApiResponse.onSuccess("추억 삭제에 성공했습니다."));
     }
 
-
     /**
-     * 특정 사용자의 게시글을 최신순으로 조회
+     * 나의 게시글을 최신순으로 조회
      */
     @Override
-    public ResponseEntity<?> getArticlesByUserId(Long userId, Long searchId, int page, int size) {
+    public ResponseEntity<?> getUserArticles(Long userId, int page, int size) {
+        // 404 : 토큰에 해당하는 회원이 실제로 존재하는지 확인
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+
+        // 페이지 처리
+        PageRequest pageRequest = PageRequest.of(page, size); // page, size 설정
+
+        // DB 검색 - 나의 게시글 조회(최신순)
+        Page<Article> articlePage = articleRepository.findAllByUserId(user.getId(), pageRequest);
+
+        // 게시글 정보 빌드 (response.result)
+        List<ArticleSearchListResponseDto> responseDtos = new ArrayList<>();
+        for (Article article : articlePage.getContent()) {
+            ArticleSearchListResponseDto responseDto = buildArticleResponse(article, userId);
+            responseDtos.add(responseDto);
+        }
+
+        // 응답 반환
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.onSuccess(responseDtos));
+    }
+
+
+    /**
+     * 특정 친구의 게시글을 최신순으로 조회
+     */
+    @Override
+    public ResponseEntity<?> getFriendsArticlesByUserId(Long userId, Long searchId, int page, int size) {
         // 404 : 토큰에 해당하는 회원이 실제로 존재하는지 확인
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
