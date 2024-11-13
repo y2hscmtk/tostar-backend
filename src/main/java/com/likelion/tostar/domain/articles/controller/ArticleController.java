@@ -52,7 +52,7 @@ public class ArticleController {
     }
 
     /**
-     * 나의 추억 조회 (최신순)
+     * 나의 추억 조회
      */
     @GetMapping("/user")
     public ResponseEntity<?> getArticlesByUserId(
@@ -63,7 +63,7 @@ public class ArticleController {
     }
 
     /**
-     * 특정 친구의 추억 조회 (최신순)
+     * 특정 친구의 추억 조회
      */
     @GetMapping("/user/{searchId}")
     public ResponseEntity<?> getArticlesByUserId(
