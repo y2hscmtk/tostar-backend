@@ -168,6 +168,7 @@ public class UserServiceImpl implements UserService {
     /**
     * 친구 추가
      */
+    @Transactional
     @Override
     public ResponseEntity<?> addFriend(Long userId, FriendDto friendDto) {
         // 404 : 해당 회원이 실제로 존재 하는지 확인
@@ -210,6 +211,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 친구 삭제
      */
+    @Transactional
     @Override
     public ResponseEntity<?> removeFriend(Long userId, FriendDto friendDto) {
         // 404 : 해당 회원이 실제로 존재 하는지 확인
@@ -230,23 +232,20 @@ public class UserServiceImpl implements UserService {
                     .body(ApiResponse.onFailure(ErrorStatus._SELF_FRIEND_REQUEST_NOT_ALLOWED, null));
         }
 
-        // 409 : 이미 친구인 경우
+        // 409 : 친구가 아닌 경우
         Optional<Relationship> foundRelationship = relationshipRepository.findByUsers(firstUser, secondUser);
-        if (foundRelationship.isPresent()) {
+        if (foundRelationship.isEmpty()) {
             return ResponseEntity.status(409)
-                    .body(ApiResponse.onFailure(ErrorStatus._FRIEND_ALREADY_EXISTS, null));
+                    .body(ApiResponse.onFailure(ErrorStatus._IS_NOT_FRIEND, null));
         }
+        Relationship relationship = foundRelationship.get();
 
-        // save
-        Relationship relationship = Relationship.builder()
-                .user1(firstUser)
-                .user2(secondUser)
-                .build();
-        relationshipRepository.save(relationship);
+        // delete
+        relationshipRepository.delete(relationship);
 
-        // 200 : 친구 추가 성공
+        // 200 : 친구 삭제 성공
         return ResponseEntity.status(200)
-                .body(ApiResponse.onSuccess("친구 추가에 성공했습니다."));
+                .body(ApiResponse.onSuccess("친구 삭제에 성공했습니다."));
     }
 
 

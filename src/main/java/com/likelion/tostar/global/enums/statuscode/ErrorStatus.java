@@ -20,7 +20,8 @@ public enum ErrorStatus implements BaseCode {
 	// Friend Error
 	_FRIEND_NOT_FOUND(HttpStatus.NOT_FOUND, "FRIEND4041", "친구 ID에 해당하는 회원이 없습니다."),
 	_FRIEND_ALREADY_EXISTS(HttpStatus.CONFLICT, "FRIEND4091", "이미 친구로 등록된 사용자입니다."),
-	_SELF_FRIEND_REQUEST_NOT_ALLOWED(HttpStatus.CONFLICT, "FRIEND4092", "자기 자신과는 친구를 맺을 수 없습니다"),
+	_SELF_FRIEND_REQUEST_NOT_ALLOWED(HttpStatus.CONFLICT, "FRIEND4092", "자기 자신과는 친구를 맺고 끊을 수 없습니다"),
+	_IS_NOT_FRIEND(HttpStatus.CONFLICT, "FRIEND4093", "해당 회원과 친구가 아닙니다."),
 
 	// Member Error
 	_MEMBER_ALREADY_JOINED(HttpStatus.FORBIDDEN, "MEMBER4001", "이미 커뮤니티에 존재하는 회원입니다."),
