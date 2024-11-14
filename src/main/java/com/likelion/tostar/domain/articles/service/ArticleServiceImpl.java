@@ -240,6 +240,14 @@ public class ArticleServiceImpl implements ArticleService {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.onSuccess(responseDtos));    }
 
+    /**
+     * 추억 상세 조회
+     */
+    @Override
+    public ResponseEntity<?> searchArticleDetail(Long articleId) {
+        return null;
+    }
+
 
     // ============================ 편의 메서드 =============================
 
