@@ -1,6 +1,6 @@
 package com.likelion.tostar.domain.user.controller;
 
-import com.likelion.tostar.domain.user.dto.AddFriendDto;
+import com.likelion.tostar.domain.user.dto.FriendDto;
 import com.likelion.tostar.domain.user.dto.UserInfoDTO;
 import com.likelion.tostar.domain.user.dto.UserJoinDTO;
 import com.likelion.tostar.domain.user.dto.LoginRequestDTO;
@@ -78,8 +78,18 @@ public class UserController {
     @PostMapping("/friend")
     public ResponseEntity<?> addFriend(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestBody AddFriendDto addFriendDto) {
-        return userService.addFriend(customUserDetails.getEmail(), addFriendDto);
+            @RequestBody FriendDto friendDto) {
+        return userService.addFriend(customUserDetails.getId(), friendDto);
+    }
+
+    /**
+     * 친구 삭제
+     */
+    @DeleteMapping("/friend")
+    public ResponseEntity<?> removeFriend(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestBody FriendDto friendDto) {
+        return userService.removeFriend(customUserDetails.getId(), friendDto);
     }
 
     /**

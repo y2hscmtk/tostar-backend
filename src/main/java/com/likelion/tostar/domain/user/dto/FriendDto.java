@@ -6,6 +6,6 @@ import lombok.Data;
  * 친구 추가 시 사용
  */
 @Data
-public class AddFriendDto {
+public class FriendDto {
     private Long friendId;
 }
