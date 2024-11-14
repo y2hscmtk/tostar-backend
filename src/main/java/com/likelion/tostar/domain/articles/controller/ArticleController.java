@@ -56,8 +56,9 @@ public class ArticleController {
      */
     @GetMapping("{articleId}")
     public ResponseEntity<?> searchArticleDetail(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable("articleId")Long articleId) {
-        return articleService.searchArticleDetail(articleId);
+        return articleService.searchArticleDetail(customUserDetails.getId(), articleId);
     }
 
     /**

@@ -26,5 +26,5 @@ public interface ArticleService {
     ResponseEntity<?> getArticlesWithoutFriends(Long userId, int page, int size);
 
     // 추억 상세 조회
-    ResponseEntity<?> searchArticleDetail(Long articleId);
+    ResponseEntity<?> searchArticleDetail(Long userId, Long articleId);
 }
