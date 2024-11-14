@@ -3,6 +3,7 @@ package com.likelion.tostar.domain.articles.service;
 import com.likelion.tostar.domain.articles.dto.ArticleCreateModifyRequestDto;
 import com.likelion.tostar.domain.articles.dto.ArticlePostResponseDto;
 import com.likelion.tostar.domain.articles.dto.ArticlePostResponseDto.ImageResponseDto;
+import com.likelion.tostar.domain.articles.dto.ArticleSearchDetailResponseDto;
 import com.likelion.tostar.domain.articles.dto.ArticleSearchListResponseDto;
 import com.likelion.tostar.domain.articles.entity.Article;
 import com.likelion.tostar.domain.articles.entity.ArticleImage;
@@ -154,6 +155,23 @@ public class ArticleServiceImpl implements ArticleService {
                 .body(ApiResponse.onSuccess("추억 삭제에 성공했습니다."));
     }
 
+
+    /**
+     * 추억 상세 조회
+     */
+    @Override
+    public ResponseEntity<?> searchArticleDetail(Long userId, Long articleId) {
+        // 404 : 존재하지 않는 추억
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._ARTICLE_NOT_FOUND));
+
+        ArticleSearchDetailResponseDto responseDto = buildArticleDetailResponse(article, userId);
+
+        // 200 : 응답 반환
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.onSuccess(responseDto));
+    }
+
     /**
      * 나의 게시글을 최신순으로 조회
      */
@@ -172,7 +190,7 @@ public class ArticleServiceImpl implements ArticleService {
         // 게시글 정보 빌드 (response.result)
         List<ArticleSearchListResponseDto> responseDtos = new ArrayList<>();
         for (Article article : articlePage.getContent()) {
-            ArticleSearchListResponseDto responseDto = buildArticleResponse(article, userId);
+            ArticleSearchListResponseDto responseDto = buildArticleListResponse(article, userId);
             responseDtos.add(responseDto);
         }
 
@@ -200,7 +218,7 @@ public class ArticleServiceImpl implements ArticleService {
         // 게시글 정보 빌드 (response.result)
         List<ArticleSearchListResponseDto> responseDtos = new ArrayList<>();
         for (Article article : articlePage.getContent()) {
-            ArticleSearchListResponseDto responseDto = buildArticleResponse(article, userId);
+            ArticleSearchListResponseDto responseDto = buildArticleListResponse(article, userId);
             responseDtos.add(responseDto);
         }
 
@@ -210,6 +228,9 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
 
+    /**
+     * 나와 친구를 제외한 친구들의 추억 조회
+     */
     @Override
     public ResponseEntity<?> getArticlesWithoutFriends(Long userId, int page, int size) {
         // 404 : 토큰에 해당하는 회원이 실제로 존재하는지 확인
@@ -232,13 +253,14 @@ public class ArticleServiceImpl implements ArticleService {
         List<ArticleSearchListResponseDto> responseDtos = new ArrayList<>();
         for (Article article : articlePage.getContent()) {
             // article을 가지고 ArticleSearchListResponseDto 빌드
-            ArticleSearchListResponseDto responseDto = buildArticleResponse(article, userId);
+            ArticleSearchListResponseDto responseDto = buildArticleListResponse(article, userId);
             responseDtos.add(responseDto);
         }
 
         // 응답 반환
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.onSuccess(responseDtos));    }
+                .body(ApiResponse.onSuccess(responseDtos));
+    }
 
 
     // ============================ 편의 메서드 =============================
@@ -291,8 +313,29 @@ public class ArticleServiceImpl implements ArticleService {
         return ResponseEntity.status(200).body(ApiResponse.onSuccess(responseDto));
     }
 
-    // article 가지고 ArticleSearchListResponseDto 빌드해주는 메서드
-    private ArticleSearchListResponseDto buildArticleResponse(Article article, Long userId) {
+    // article -> ArticleSearchDetailResponseDto 빌드해주는 메서드
+    private ArticleSearchDetailResponseDto buildArticleDetailResponse(Article article, Long userId) {
+        // 이미지 리스트 빌드 - images
+        List<ArticleSearchListResponseDto.ImageDto> imageDtos = new ArrayList<>();
+        for (ArticleImage image : article.getImages()) {
+            ArticleSearchListResponseDto.ImageDto imageDto = ArticleSearchListResponseDto.ImageDto.builder()
+                    .imageId(image.getId())
+                    .url(image.getUrl())
+                    .build();
+            imageDtos.add(imageDto);
+        }
+        // ArticleSearchDetailResponseDto 빌드
+        return ArticleSearchDetailResponseDto.builder()
+                .articleId(article.getId())
+                .title(article.getTitle())
+                .content(article.getContent())
+                .images(imageDtos)
+                .isOwner(article.getUser().getId().equals(userId))
+                .build();
+    }
+
+    // article -> ArticleSearchListResponseDto 빌드해주는 메서드
+    private ArticleSearchListResponseDto buildArticleListResponse(Article article, Long userId) {
         // 작성자 정보 빌드 - author
         User author = article.getUser();
         ArticleSearchListResponseDto.AuthorDto authorDto = ArticleSearchListResponseDto.AuthorDto.builder()

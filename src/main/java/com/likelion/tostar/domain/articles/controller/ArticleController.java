@@ -32,7 +32,7 @@ public class ArticleController {
     /**
      * 추억 수정하기
      */
-    @GetMapping("{articleId}")
+    @PutMapping("{articleId}")
     public ResponseEntity<?> modifyArticle(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable("articleId") Long articleId,
@@ -49,6 +49,16 @@ public class ArticleController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable("articleId") Long articleId) {
         return articleService.deleteArticle(articleId, customUserDetails.getId());
+    }
+
+    /**
+     * 추억 상세조회
+     */
+    @GetMapping("{articleId}")
+    public ResponseEntity<?> searchArticleDetail(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable("articleId")Long articleId) {
+        return articleService.searchArticleDetail(customUserDetails.getId(), articleId);
     }
 
     /**
