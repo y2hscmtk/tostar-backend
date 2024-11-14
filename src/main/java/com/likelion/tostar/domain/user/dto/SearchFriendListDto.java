@@ -12,4 +12,7 @@ public class SearchFriendListDto {
     private Long id;
     private String petName;
     private String profileImage;
+    private String category;
+    private String birthday;
+    private String starDay;
 }
