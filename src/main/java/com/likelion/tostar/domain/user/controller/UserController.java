@@ -21,7 +21,7 @@ import java.io.IOException;
 public class UserController {
     private final UserService userService;
 
-    /**~
+    /**
      * 회원 로그인
      */
     @PostMapping("/login")
@@ -39,7 +39,6 @@ public class UserController {
             @Valid @ModelAttribute UserJoinDTO userJoinDTO) throws IOException {
         return userService.join(image, userJoinDTO);
     }
-
 
     /**
      * 회원 개인 정보 열람(개인 정보 수정 전)

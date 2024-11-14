@@ -231,6 +231,9 @@ public class UserServiceImpl implements UserService {
                     .id(friend.getId())
                     .petName(friend.getPetName())
                     .profileImage(friend.getProfileImage())
+                    .category(friend.getCategory())
+                    .birthday(String.valueOf(friend.getBirthday()))
+                    .starDay(String.valueOf(friend.getStarDay()))
                     .build();
             result.add(data);
         }
