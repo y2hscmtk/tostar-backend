@@ -168,14 +168,15 @@ public class UserServiceImpl implements UserService {
     /**
     * 친구 추가
      */
+    @Transactional
     @Override
-    public ResponseEntity<?> addFriend(String email, AddFriendDto addFriendDto) {
+    public ResponseEntity<?> addFriend(Long userId, FriendDto friendDto) {
         // 404 : 해당 회원이 실제로 존재 하는지 확인
-        User user = userRepository.findUserByEmail(email)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
 
         // 404 : 친구 id에 해당하는 user가 없는 경우
-        User friend = userRepository.findById(addFriendDto.getFriendId())
+        User friend = userRepository.findById(friendDto.getFriendId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus._FRIEND_NOT_FOUND));
 
         // (효과적인) relationship 테이블 탐색을 위한 id 순서대로 정렬
@@ -206,6 +207,47 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(200)
                 .body(ApiResponse.onSuccess("친구 추가에 성공했습니다."));
     }
+
+    /**
+     * 친구 삭제
+     */
+    @Transactional
+    @Override
+    public ResponseEntity<?> removeFriend(Long userId, FriendDto friendDto) {
+        // 404 : 해당 회원이 실제로 존재 하는지 확인
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus._USER_NOT_FOUND));
+
+        // 404 : 친구 id에 해당하는 user가 없는 경우
+        User friend = userRepository.findById(friendDto.getFriendId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus._FRIEND_NOT_FOUND));
+
+        // (효과적인) relationship 테이블 탐색을 위한 id 순서대로 정렬
+        User firstUser = (user.getId() < friend.getId()) ? user : friend; // 더 작은 id를 가진 회원
+        User secondUser = (user.getId() < friend.getId()) ? friend : user; // 더 큰 id를 가진 회원
+
+        // 409 : 자기 자신과 친구를 맺으려는 경우
+        if (user.equals(friend)) {
+            return ResponseEntity.status(409)
+                    .body(ApiResponse.onFailure(ErrorStatus._SELF_FRIEND_REQUEST_NOT_ALLOWED, null));
+        }
+
+        // 409 : 친구가 아닌 경우
+        Optional<Relationship> foundRelationship = relationshipRepository.findByUsers(firstUser, secondUser);
+        if (foundRelationship.isEmpty()) {
+            return ResponseEntity.status(409)
+                    .body(ApiResponse.onFailure(ErrorStatus._IS_NOT_FRIEND, null));
+        }
+        Relationship relationship = foundRelationship.get();
+
+        // delete
+        relationshipRepository.delete(relationship);
+
+        // 200 : 친구 삭제 성공
+        return ResponseEntity.status(200)
+                .body(ApiResponse.onSuccess("친구 삭제에 성공했습니다."));
+    }
+
 
     /**
     * 친구 전체 조회

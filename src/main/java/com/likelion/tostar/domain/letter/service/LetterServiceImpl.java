@@ -30,7 +30,6 @@ import static com.likelion.tostar.domain.letter.entity.SenderType.PET;
 import static com.likelion.tostar.domain.letter.entity.SenderType.USER;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class LetterServiceImpl implements LetterService {
 
