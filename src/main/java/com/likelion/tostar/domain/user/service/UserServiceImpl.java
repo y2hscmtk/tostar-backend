@@ -153,9 +153,9 @@ public class UserServiceImpl implements UserService {
                     .id(user.getId())
                     .petName(user.getPetName())
                     .profileImage(user.getProfileImage())
-                    .category(user.getCategory())
-                    .birthday(user.getBirthday().toString())
-                    .starDay(user.getStarDay().toString())
+                    .category(user.getCategory() != null ? user.getCategory() : "") // category가 없으면 빈 문자열
+                    .birthday(user.getBirthday() != null ? String.valueOf(user.getBirthday()) : "") // birthday가 없으면 빈 문자열
+                    .starDay(user.getStarDay() != null ? String.valueOf(user.getStarDay()) : "") // starDay가 없으면 빈 문자열
                     .build();
             data.add(dto);
         }
@@ -273,9 +273,9 @@ public class UserServiceImpl implements UserService {
                     .id(friend.getId())
                     .petName(friend.getPetName())
                     .profileImage(friend.getProfileImage())
-                    .category(friend.getCategory())
-                    .birthday(String.valueOf(friend.getBirthday()))
-                    .starDay(String.valueOf(friend.getStarDay()))
+                    .category(friend.getCategory() != null ? friend.getCategory() : "")
+                    .birthday(friend.getBirthday() != null ? String.valueOf(friend.getBirthday()) : "")
+                    .starDay(friend.getStarDay() != null ? String.valueOf(friend.getStarDay()) : "")
                     .build();
             result.add(data);
         }
