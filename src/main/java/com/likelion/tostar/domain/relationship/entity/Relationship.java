@@ -17,11 +17,11 @@ public class Relationship {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id1", nullable = false) // 작은 id를 가진 user 넣기
-    private User user1;
+    @JoinColumn(name = "follower", nullable = false) // 친구 신청을 건 사람
+    private User follower;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id2", nullable = false) // 큰 id를 가진 user 넣기
-    private User user2;
+    @JoinColumn(name = "followee", nullable = false) // 친구 신청을 받은 사람
+    private User followee;
 
 }
