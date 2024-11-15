@@ -186,7 +186,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // 409 : 이미 친구인 경우
-        Optional<Relationship> foundRelationship = relationshipRepository.findByUsers(follower, followee);
+        Optional<Relationship> foundRelationship = relationshipRepository.findByFollowerAndFollowee(follower, followee);
         if (foundRelationship.isPresent()) {
             return ResponseEntity.status(409)
                     .body(ApiResponse.onFailure(ErrorStatus._FRIEND_ALREADY_EXISTS, null));
@@ -194,8 +194,8 @@ public class UserServiceImpl implements UserService {
 
         // save
         Relationship relationship = Relationship.builder()
-                .user1(user)
-                .user2(friend)
+                .follower(follower)
+                .followee(followee)
                 .build();
         relationshipRepository.save(relationship);
 
@@ -229,7 +229,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // 409 : 친구가 아닌 경우
-        Optional<Relationship> foundRelationship = relationshipRepository.findByUsers(firstUser, secondUser);
+        Optional<Relationship> foundRelationship = relationshipRepository.findByFollowerAndFollowee(firstUser, secondUser);
         if (foundRelationship.isEmpty()) {
             return ResponseEntity.status(409)
                     .body(ApiResponse.onFailure(ErrorStatus._IS_NOT_FRIEND, null));
@@ -251,7 +251,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<?> searchFriend(Long userId) {
         // userId와 관계를 갖는 모든 relationships 불러오기
-        List<Relationship> relationships = relationshipRepository.findAllByUserId(userId);
+        List<Relationship> relationships = relationshipRepository.findAllByFollower_Id(userId);
         List<SearchFriendListDto> result = new ArrayList<>();
 
         // 관계에서 해당 userId의 친구들 찾기

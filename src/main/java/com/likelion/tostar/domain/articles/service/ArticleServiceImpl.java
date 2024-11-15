@@ -372,17 +372,15 @@ public class ArticleServiceImpl implements ArticleService {
 
     // 친구 목록(id) 가져오는 메서드
     public List<Long> getFriendIds(Long userId) {
-        List<Relationship> relationships = relationshipRepository.findAllByUserId(userId);
+        //user = follower
+        List<Relationship> relationships = relationshipRepository.findAllByFollower_Id(userId);
         List<Long> friendIds = new ArrayList<>();
 
-        // user1, user2 관계에서 친구들의 ID 추출
+        // followee의 ID를 추출
         for (Relationship relationship : relationships) {
-            if (relationship.getUser1().getId().equals(userId)) {
-                friendIds.add(relationship.getUser2().getId());
-            } else {
-                friendIds.add(relationship.getUser1().getId());
-            }
+            friendIds.add(relationship.getFollowee().getId());
         }
+
         return friendIds;
     }
 
