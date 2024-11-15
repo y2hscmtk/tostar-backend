@@ -380,7 +380,6 @@ public class ArticleServiceImpl implements ArticleService {
         for (Relationship relationship : relationships) {
             friendIds.add(relationship.getFollowee().getId());
         }
-
         return friendIds;
     }
 

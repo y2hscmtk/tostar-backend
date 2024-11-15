@@ -256,14 +256,7 @@ public class UserServiceImpl implements UserService {
 
         // 관계에서 해당 userId의 친구들 찾기
         for (Relationship relationship : relationships) {
-            User friend;
-            // user1이 자신인 경우, user2가 친구
-            if (relationship.getUser1().getId().equals(userId)) {
-                friend = relationship.getUser2();
-            } else { // user2가 자신인 경우, user1이 친구
-                friend = relationship.getUser1();
-            }
-
+            User friend = relationship.getFollowee();
             // data 가공
             SearchFriendListDto data = SearchFriendListDto.builder()
                     .id(friend.getId())
