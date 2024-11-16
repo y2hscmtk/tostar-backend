@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +49,7 @@ public class CommunityQueryServiceImpl implements CommunityQueryService{
 
     @Override
     public ResponseEntity<?> getAllPreviews(Pageable pageable) {
-        Pageable defaultPageable = getDefaultPageable(pageable); // 최신 생성순 조회
+        Pageable defaultPageable = getAscSortPageable(pageable); // 최신 생성순 조회
 
         Page<Community> allCommunities = communityRepository.findAll(defaultPageable);
 
@@ -68,7 +69,7 @@ public class CommunityQueryServiceImpl implements CommunityQueryService{
         User user = findUserByEmail(email);
 
         // 2. 정렬 기준 설정
-        Pageable defaultPageable = getDefaultPageable(pageable);
+        Pageable defaultPageable = getDescSortPageable(pageable);
 
         // 2. 연관된 회원 정보 조회
         Page<Community> myCommunities = memberRepository.findMyCommunities(user, defaultPageable);
@@ -106,13 +107,25 @@ public class CommunityQueryServiceImpl implements CommunityQueryService{
     /**
      * 정렬 기준 : 최신 작성(생성) 순
      */
-    public Pageable getDefaultPageable(Pageable pageable) {
+    public Pageable getDescSortPageable(Pageable pageable) {
         return PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
                 Sort.by(Sort.Direction.DESC, "createdAt")
         );
     }
+
+    /**
+     * 정렬 기준 : 옛날 작성(생성) 순
+     */
+    public Pageable getAscSortPageable(Pageable pageable) {
+        return PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(Direction.ASC, "createdAt")
+        );
+    }
+
 
     private User findUserByEmail(String email) {
         return userRepository.findUserByEmail(email)
