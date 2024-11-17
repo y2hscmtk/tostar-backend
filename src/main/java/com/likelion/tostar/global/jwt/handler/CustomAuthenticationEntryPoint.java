@@ -33,7 +33,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.getWriter().write(objectMapper.writeValueAsString(
                 ApiResponse.onFailure(
                         ErrorStatus.TOKEN_ERROR,
-                        "JWT를 다시 한번 확인해주세요. 1. 요청 Header에 'Authorization'키로 삽입하였는지 확인, 2. Bearer 키워드를 붙였는지 확인")
+                        "1. JWT를 다시 한번 확인해주세요.(유효기간, Bearer, 등), 2. API 명세서의 요구사항을 모두 지켰는지 확인해주세요(DTO오타, 주소, 등)")
         ));
     }
 }

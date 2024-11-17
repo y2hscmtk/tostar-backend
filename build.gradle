@@ -5,7 +5,12 @@ plugins {
 }
 
 group = 'com.likelion.tostar'
-version = '0.0.1-SNAPSHOT'
+
+jar { // jar 빌드시 plain 삭제 -> 빌드 시간 단축용
+	archiveBaseName = 'tostar'
+	version = '0.0.1-SNAPSHOT'
+	enabled = false
+}
 
 java {
 	toolchain {
@@ -28,6 +33,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -35,10 +42,15 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+
 	// JWT Dependency
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+	// websocket
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.springframework:spring-messaging'
 }
 
 tasks.named('test') {
